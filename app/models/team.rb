@@ -58,6 +58,7 @@ class Team < ApplicationRecord
   end
 
   def has_correct_scopes?
+    return false if scopes.blank?
     (SCOPES - scopes.split(',')).blank?
   end
 
