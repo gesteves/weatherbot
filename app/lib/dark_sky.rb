@@ -1,15 +1,5 @@
 module DarkSky
-  def self.forecast(location)
-    unit_system = if location.match(/\s+in\s+(celsius|c|metric|si)$/i)
-      location.sub!(/\s+in\s+(celsius|c|metric|si)$/i, '')
-      'si'
-    elsif location.match(/\s+in\s+(fahrenheit|f|imperial)$/i)
-      location.sub!(/\s+in\s+(fahrenheit|f|imperial)$/i, '')
-      'us'
-    else
-      'auto'
-    end
-
+  def self.forecast(location:, unit_system: 'auto')
     geocoded = GoogleMaps.geocode(location)
     lat = geocoded[:lat]
     long = geocoded[:long]
