@@ -239,6 +239,6 @@ class Slack
       response_type: response_type
     }.compact
     response = HTTParty.post(response_url, body: params.to_json)
-    JSON.parse(response.body, symbolize_names: true)
+    response.body
   end
 end
