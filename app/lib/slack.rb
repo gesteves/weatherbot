@@ -204,4 +204,39 @@ class Slack
                             headers: { 'Authorization': "Bearer #{access_token}", 'Content-Type': 'application/json' })
     JSON.parse(response.body, symbolize_names: true)
   end
+
+  # Sends a message to a response url.
+  # @param access_token [String] Authentication token bearing required scopes.
+  # @param channel_id [String] Channel, private group, or IM channel to send message to.
+  # @param attachments [Hash] The content of the message.
+  # @param blocks [Hash] The content of the message.
+  # @param text [String] The content of the message. If `attachments`` or `blocks`` are included, `text`` will be used as fallback text for notifications only.
+  # @param link_names [Boolean] Find and link channel names and usernames.
+  # @param markdown [Boolean] Disable Slack markup parsing by setting to false.
+  # @param parse [String] Change how messages are treated, can be `none` or `full`.
+  # @param reply_broadcast [Boolean] Used in conjunction with `thread_ts`` and indicates whether reply should be made visible to everyone in the channel or conversation.
+  # @param thread_ts [String] Provide another message's ts value to make this message a reply.
+  # @param unfurl_links [Boolean] Pass true to enable unfurling of primarily text-based content
+  # @param unfurl_media [Boolean] Pass false to disable unfurling of media content.
+  # @see https://api.slack.com/methods/chat.postMessage
+  # @return [String] A JSON response.
+  def self.post_to_webhook(
+    response_url:,
+    attachments: nil,
+    blocks: nil,
+    text: nil,
+    markdown: true,
+    thread_ts: nil
+  )
+    return if attachments.blank? && blocks.blank? && text.blank?
+    params = {
+      attachments: attachments,
+      blocks: blocks,
+      text: text,
+      mrkdwn: markdown,
+      thread_ts: thread_ts
+    }.compact
+    response = HTTParty.post(response_url, body: params.to_json)
+    JSON.parse(response.body, symbolize_names: true)
+  end
 end

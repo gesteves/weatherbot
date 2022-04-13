@@ -105,6 +105,7 @@ class SlackController < ApplicationController
     @user = params[:user_id]
     @command = params[:command]
     @text = params[:text]
+    @response_url = params[:response_url]
   end
 
   # EVENT HANDLERS
@@ -128,6 +129,6 @@ class SlackController < ApplicationController
   # SLASH HANDLERS
 
   def slash_weather
-    PostForecastWorker.perform_async(@text, @team, @channel)
+    PostForecastWorker.perform_async(@text, @response_url)
   end
 end
