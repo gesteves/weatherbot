@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Trebekbot</title>
+    <title>Weatherbot</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <% if @noindex %>
       <meta name="robots" content="noindex">
@@ -19,7 +19,7 @@
       <% flash.each do |name, msg| -%>
         <p><%= msg %></p>
       <% end -%>
-      <h1>Trebekbot</h1>
+      <h1>Weatherbot</h1>
       <%= yield %>
       <footer class="footer">
         <p>Built by <a href="https://www.twitter.com/gesteves">@gesteves</a> • <a href="https://github.com/gesteves/weatherbot">GitHub</a> • Powered by <a href="https://darksky.net/poweredby/">Dark Sky</a></p>
