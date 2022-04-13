@@ -62,7 +62,7 @@ class ForecastPresenter < SimpleDelegator
       "#{currently.dig(:temperature).round}°#{temp_unit} (feels like #{currently.dig(:apparentTemperature).round}°#{temp_unit})"
     end
 
-    text = "#{currently.dig(:summary)}, #{temperature}, #{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)} humidity, dew point #{currently.dig(:dewPoint).round}°#{temp_unit}"
+    text = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary)}, #{temperature}, #{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)} humidity, dew point #{currently.dig(:dewPoint).round}°#{temp_unit}".strip
 
     {
 			type: "section",
@@ -77,11 +77,13 @@ class ForecastPresenter < SimpleDelegator
     minutely = dig(:minutely)
     return if minutely.blank?
 
+    text = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}".strip
+
     {
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Next hour*\n#{minutely.dig(:summary)}"
+				text: "*Next hour*\n#{text}"
 			}
 		}
   end
@@ -93,7 +95,7 @@ class ForecastPresenter < SimpleDelegator
     apparent_temperatures = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
     high = apparent_temperatures.max.round
     low = apparent_temperatures.min.round
-    text = "#{hourly.dig(:summary).sub(/\.$/, '')}. The high for the next 24 hours is #{high}°#{temp_unit}, and the low is #{low}°#{temp_unit}."
+    text = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary).sub(/\.$/, '')}. The high for the next 24 hours is #{high}°#{temp_unit}, and the low is #{low}°#{temp_unit}.".strip
 
     {
 			type: "section",
@@ -108,12 +110,32 @@ class ForecastPresenter < SimpleDelegator
     daily = dig(:daily)
     return if daily.blank?
 
+    text = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}".strip
+
     {
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Next 7 days*\n#{daily.dig(:summary)}"
+				text: "*Next 7 days*\n#{text}"
 			}
 		}
+  end
+
+  def icon_to_emoji(icon)
+    mapping = {
+      'clear-day': ':sunny:',
+      'clear-night': ':moon:',
+      'rain': ':rain_cloud:',
+      'snow': ':snowflake:',
+      'sleet': ':snow_cloud:',
+      'wind': ':dash:',
+      'fog': ':fog:',
+      'cloudy': ':cloud:',
+      'partly-cloudy-day': ':partly_sunny:',
+      'partly-cloudy-night': ':cloud:',
+      'thunderstorm': ':lightning:',
+      'tornado': ':tornado:'
+    }
+    mapping[icon] || ''
   end
 end
