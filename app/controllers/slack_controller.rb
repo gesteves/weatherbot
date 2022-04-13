@@ -68,7 +68,7 @@ class SlackController < ApplicationController
 
   def check_team
     team = Team.find_by(slack_id: @team)
-    if team&.has_correct_scopes?
+    unless team&.has_correct_scopes?
       response = { text: "This app has been updated and requires new permissions; please visit #{root_url} to reinstall it. Thanks!", response_type: 'ephemeral', unfurl_links: true }
       render json: response, status: 200
     end
