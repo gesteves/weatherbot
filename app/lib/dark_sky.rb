@@ -14,7 +14,7 @@ module DarkSky
     lat = geocoded[:lat]
     long = geocoded[:long]
 
-    body = Rails.cache.fetch("darksky/forecast/#{lat}/#{long}", expires_in: 10.minutes) do
+    body = Rails.cache.fetch("darksky/forecast/#{lat}/#{long}/#{unit_system}", expires_in: 10.minutes) do
       query = {
         units: unit_system
       }
