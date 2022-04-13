@@ -47,7 +47,7 @@ class ForecastPresenter < SimpleDelegator
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: dig(:alerts).map { |alert| "<#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
+				text: dig(:alerts).map { |alert| ":warning: <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
 			}
 		}
   end
