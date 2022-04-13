@@ -5,6 +5,6 @@ class PostForecastWorker < ApplicationWorker
     forecast = DarkSky.forecast(location)
     blocks = ForecastPresenter.new(forecast).to_blocks
     text = "Weather forecast for #{forecast[:formatted_address]}: https://darksky.net/#{forecast[:lat]},#{forecast[:long]}"
-    Slack.post_to_webhook(response_url: response_url, text: text, blocks: blocks)
+    Slack.post_to_webhook(response_url: response_url, text: text, blocks: blocks, response_type: "in_channel")
   end
 end

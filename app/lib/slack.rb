@@ -226,7 +226,8 @@ class Slack
     blocks: nil,
     text: nil,
     markdown: true,
-    thread_ts: nil
+    thread_ts: nil,
+    response_type: 'ephemeral'
   )
     return if attachments.blank? && blocks.blank? && text.blank?
     params = {
@@ -234,7 +235,8 @@ class Slack
       blocks: blocks,
       text: text,
       mrkdwn: markdown,
-      thread_ts: thread_ts
+      thread_ts: thread_ts,
+      response_type: response_type
     }.compact
     response = HTTParty.post(response_url, body: params.to_json)
     JSON.parse(response.body, symbolize_names: true)
