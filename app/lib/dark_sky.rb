@@ -10,17 +10,19 @@ module DarkSky
       'auto'
     end
 
-    body = Rails.cache.fetch("darksky/forecast/#{location.parameterize}", expires_in: 10.minutes) do
-      location = GoogleMaps.geocode(location)
-      lat = location[:lat]
-      long = location[:long]
+    geocoded = GoogleMaps.geocode(location)
+    lat = geocoded[:lat]
+    long = geocoded[:long]
+
+    body = Rails.cache.fetch("darksky/forecast/#{lat}/#{long}", expires_in: 10.minutes) do
       query = {
         units: unit_system
       }
       HTTParty.get("https://api.darksky.net/forecast/#{ENV['DARKSKY_API_KEY']}/#{lat},#{long}", query: query).body
     end
+
     response = JSON.parse(body, symbolize_names: true)
-    response[:formatted_address] = location[:formatted_address]
+    response[:formatted_address] = geocoded[:formatted_address]
     response
   end
 end
