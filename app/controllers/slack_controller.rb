@@ -18,6 +18,7 @@ class SlackController < ApplicationController
         team_id = token.dig(:team, :id)
         team = Team.find_or_create_by(slack_id: team_id)
         team.access_token = access_token
+        team.scopes = token[:scope]
         if team.save
           notice = nil
           url = success_url
@@ -67,7 +68,7 @@ class SlackController < ApplicationController
 
   def check_team
     team = Team.find_by(slack_id: @team)
-    if team.blank?
+    if team&.has_correct_scopes?
       response = { text: "This app has been updated and requires new permissions; please visit #{root_url} to reinstall it. Thanks!", response_type: 'ephemeral', unfurl_links: true }
       render json: response, status: 200
     end

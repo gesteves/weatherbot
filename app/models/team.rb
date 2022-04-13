@@ -57,6 +57,10 @@ class Team < ApplicationRecord
     invalid_token
   end
 
+  def has_correct_scopes?
+    (SCOPES - scopes.split(',')).blank?
+  end
+
   def bot_id
     return if Rails.env.test?
     Rails.cache.fetch("slack/#{slack_id}/bot/id/", expires_in: 1.day) do

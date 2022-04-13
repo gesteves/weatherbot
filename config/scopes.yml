@@ -1,0 +1,3 @@
+- users:read
+- app_mentions:read
+- chat:write
