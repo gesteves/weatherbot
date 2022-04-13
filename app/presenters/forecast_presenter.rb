@@ -6,7 +6,7 @@ class ForecastPresenter < SimpleDelegator
 			type: "section",
 			text: {
 				type: "mrkdwn",
-				text: "*Weather forecast for <https://darksky.net/#{dig(:lat)},#{dig(:long)}|#{dig(:formatted_address)}>*"
+				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:formatted_address)}>*"
 			}
 		}
 
