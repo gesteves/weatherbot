@@ -55,7 +55,7 @@ class SlackController < ApplicationController
     when "/weather"
       slash_weather
     end
-    response = { response_type : "in_channel"}
+    response = { response_type: "in_channel" }
     render json: response, status: 200
   end
 
