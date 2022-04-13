@@ -5,6 +5,7 @@ class SlackController < ApplicationController
   before_action :parse_interaction, only: :interactions
   before_action :parse_slash, only: :slash
   before_action :check_token, only: [:events, :interactions, :slash]
+  before_action :check_team, only: :slash
   before_action :verify_url, only: :events
 
   def auth
@@ -50,13 +51,26 @@ class SlackController < ApplicationController
   end
 
   def slash
-    render plain: "OK", status: 200
+    case @command
+    when "/weather"
+      slash_weather
+    end
+    response = { response_type : "in_channel"}
+    render json: response, status: 200
   end
 
   private
 
   def check_token
     render plain: "Unauthorized", status: 401 if @token != ENV['SLACK_VERIFICATION_TOKEN']
+  end
+
+  def check_team
+    team = Team.find_by(slack_id: @team)
+    if team.blank?
+      response = { text: "This app has been updated and requires new permissions; please visit #{root_url} to reinstall it. Thanks!", response_type: 'ephemeral', unfurl_links: true }
+      render json: response, status: 200
+    end
   end
 
   def parse_event
@@ -112,4 +126,8 @@ class SlackController < ApplicationController
   # INTERACTION HANDLERS
 
   # SLASH HANDLERS
+
+  def slash_weather
+    PostForecastWorker.perform_async(@text, @team, @channel)
+  end
 end
