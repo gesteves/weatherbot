@@ -1,4 +1,6 @@
 class OpenPreferencesWorker < ApplicationWorker
+  sidekiq_options retry: false
+
   def perform(team_id, user_id, trigger_id)
     return if team_id.blank? || user_id.blank? || trigger_id.blank?
     team = Team.find_by(slack_id: team_id)
