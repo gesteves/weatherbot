@@ -114,7 +114,7 @@ class ForecastPresenter < SimpleDelegator
     summary = minutely.dig(:summary)
 
     now = Time.now.to_i
-    data = minutely.dig(:data).select { |d| d[:time] > now }
+    data = minutely.dig(:data)&.select { |d| d[:time] > now }
 
     precipitation = data&.find { |a| a[:precipProbability] > 0 } || data&.first
     chance = number_to_percentage(precipitation[:precipProbability] * 100, precision: 0)
@@ -150,7 +150,7 @@ class ForecastPresenter < SimpleDelegator
     summary = hourly.dig(:summary)
 
     now = Time.now.to_i
-    data = hourly.dig(:data).select { |d| d[:time] > now }
+    data = hourly.dig(:data)&.select { |d| d[:time] > now }
 
     max_temp = data&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
     min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
@@ -186,7 +186,7 @@ class ForecastPresenter < SimpleDelegator
     summary = daily.dig(:summary)
 
     now = Time.now.to_i
-    data = daily.dig(:data).select { |d| d[:time] > now }
+    data = daily.dig(:data)&.select { |d| d[:time] > now }
 
     max_temp = data&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
     min_temp = data&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
