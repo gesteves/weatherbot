@@ -239,12 +239,13 @@ class ForecastPresenter < SimpleDelegator
       {
         type: "line",
         data: {
-          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%k:%l %p') },
+          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M %P') },
           datasets: [{
             label: "Chance of precipitation",
             fill: false,
             borderColor: 'blue',
-            data: minutely[:data].map { |d| d[:precipProbability] * 100 }
+            data: minutely[:data].map { |d| d[:precipProbability] * 100 },
+            pointRadius: 0
           }]
         },
         options: {
@@ -262,6 +263,9 @@ class ForecastPresenter < SimpleDelegator
                 scaleLabel: {
                   display: false
                 },
+                gridLines: {
+                  display: false
+                }
               },
             ],
             yAxes: [
@@ -270,6 +274,14 @@ class ForecastPresenter < SimpleDelegator
                 scaleLabel: {
                   display: false
                 },
+                gridLines: {
+                  display: false
+                },
+                ticks: {
+                  beginAtZero: true,
+                  suggestedMin: 0,
+                  suggestedMax: 100
+                }
               },
             ],
           },
