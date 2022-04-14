@@ -9,10 +9,7 @@ module GoogleMaps
     end
     response = JSON.parse(body, symbolize_names: true)
 
-    unless response[:status] == 'OK'
-      logger.error response[:status] unless response[:status] == 'OK'
-      return
-    end
+    return unless response[:status] == 'OK'
 
     {
       formatted_address: response.dig(:results, 0, :formatted_address),
