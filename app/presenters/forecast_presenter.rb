@@ -86,6 +86,7 @@ class ForecastPresenter < SimpleDelegator
     context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
     context << "UV index *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
     context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_direction(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
+    context << "Gusts *#{wind_speed(currently.dig(:windGust))}*" if currently.dig(:windGust).present?
 
     [
       {
