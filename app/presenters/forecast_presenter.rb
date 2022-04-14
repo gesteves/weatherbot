@@ -14,11 +14,11 @@ class ForecastPresenter < SimpleDelegator
 			type: "divider"
 		}
 
-    blocks << alerts_block
-    blocks << currently_block
-    blocks << minutely_block
-    blocks << hourly_block
-    blocks << daily_block
+    blocks.append(alerts_block)
+    blocks.append(currently_block)
+    blocks.append(minutely_block)
+    blocks.append(hourly_block)
+    blocks.append(daily_block)
 
     blocks << {
 			type: "divider"
@@ -43,67 +43,95 @@ class ForecastPresenter < SimpleDelegator
 
   def alerts_block
     return if dig(:alerts).nil?
-    {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: dig(:alerts).map { |alert| ":warning: <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
-			}
-		}
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: dig(:alerts).map { |alert| ":warning: <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
+        }
+		  }
+    ]
   end
 
   def currently_block
     currently = dig(:currently)
-    return if currently.blank?
+    return [] if currently.blank?
 
-    temperature = if currently.dig(:temperature).round == currently.dig(:apparentTemperature).round
-      "#{currently.dig(:temperature).round}°#{temp_unit}"
-    else
-      "#{currently.dig(:temperature).round}°#{temp_unit} (feels like #{currently.dig(:apparentTemperature).round}°#{temp_unit})"
-    end
+    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:temperature).round}°#{temp_unit} #{currently.dig(:summary).sub(/\.$/, '')}.".strip
 
-    text = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary)}, #{temperature}, #{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)} humidity, dew point #{currently.dig(:dewPoint).round}°#{temp_unit}".strip
+    context = []
+    context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
+    context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
+    context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
+    context << "UV index *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
 
-    {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Right now*\n#{text}"
-			}
-		}
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Right now*\n#{summary}"
+        }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context.join(" | ")
+          }
+        ]
+      }
+    ]
   end
 
   def minutely_block
     minutely = dig(:minutely)
     return if minutely.blank?
 
-    text = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}".strip
+    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}".strip
 
-    {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Next hour*\n#{text}"
-			}
-		}
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Next hour*\n#{summary}"
+        }
+      }
+    ]
   end
 
   def hourly_block
     hourly = dig(:hourly)
     return if hourly.blank?
 
+    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}".strip
+
     apparent_temperatures = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
     high = apparent_temperatures.max.round
     low = apparent_temperatures.min.round
-    text = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary).sub(/\.$/, '')}. The high for the next 24 hours is #{high}°#{temp_unit}, and the low is #{low}°#{temp_unit}.".strip
+    context = "Low *#{low}#{temp_unit}* | High *#{high}#{temp_unit}*"
 
-    {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Next 24 hours*\n#{text}"
-			}
-		}
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Next 24 hours*\n#{summary}"
+        }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context
+          }
+        ]
+      }
+    ]
   end
 
   def daily_block
@@ -112,13 +140,15 @@ class ForecastPresenter < SimpleDelegator
 
     text = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}".strip
 
-    {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Next 7 days*\n#{text}"
-			}
-		}
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Next 7 days*\n#{text}"
+        }
+      }
+    ]
   end
 
   def icon_to_emoji(icon)
