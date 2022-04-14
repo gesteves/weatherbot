@@ -239,7 +239,7 @@ class ForecastPresenter < SimpleDelegator
       {
         type: "line",
         data: {
-          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M %P') },
+          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M') },
           datasets: [{
             label: "Chance of precipitation",
             fill: false,
