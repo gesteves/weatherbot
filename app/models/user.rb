@@ -63,4 +63,20 @@ class User < ApplicationRecord
   def open_preferences(trigger_id)
     team.open_view(trigger_id: trigger_id, view: PreferencesPresenter.new(self).to_view)
   end
+
+  def forecast
+    return if location.blank?
+    geocoded = GoogleMaps.geocode(location)
+
+    unless geocoded[:status] == 'OK'
+      logger.error geocoded[:status]
+      return
+    end
+
+    lat = geocoded.dig(:results, 0, :geometry, :location, :lat)
+    long = geocoded.dig(:results, 0, :geometry, :location, :lng)
+    formatted_address = geocoded.dig(:results, 0, :formatted_address)
+
+    DarkSky.forecast(location: formatted_address, lat: lat, long: long)
+  end
 end

@@ -48,6 +48,6 @@ class HomeViewPresenter < SimpleDelegator
   end
 
   def forecast_blocks
-    []
+    ForecastPresenter.new(forecast).to_blocks
   end
 end
