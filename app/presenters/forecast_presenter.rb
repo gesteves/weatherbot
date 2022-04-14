@@ -285,7 +285,7 @@ class ForecastPresenter < SimpleDelegator
         }
       },
       width: 600,
-      height: 300,
+      height: 400,
       device_pixel_ratio: 2.0,
     )
 
