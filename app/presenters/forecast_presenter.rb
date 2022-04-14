@@ -296,7 +296,7 @@ class ForecastPresenter < SimpleDelegator
 
     {
 			"type": "image",
-			"image_url": qc.get_url,
+			"image_url": qc.get_short_url,
 			"alt_text": "Chance of precipitation for the next hour"
 		}
   end
