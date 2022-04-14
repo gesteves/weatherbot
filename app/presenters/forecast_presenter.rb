@@ -1,6 +1,6 @@
 class ForecastPresenter < SimpleDelegator
   include ActionView::Helpers::NumberHelper
-  def to_blocks
+  def short_forecast_blocks
     blocks = []
     blocks << {
 			type: "section",
