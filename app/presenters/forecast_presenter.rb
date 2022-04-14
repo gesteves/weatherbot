@@ -113,7 +113,10 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
-    precipitation = minutely.dig(:data)&.find { |a| a[:precipProbability] > 0 } || minutely.dig(:data)&.first
+    now = Time.now.to_i
+    data = minutely.dig(:data).select { |d| d[:time] > now }
+
+    precipitation = data&.find { |a| a[:precipProbability] > 0 } || data&.first
     chance = number_to_percentage(precipitation[:precipProbability] * 100, precision: 0)
     date = "<!date^#{precipitation[:time]}^{time}|#{Time.at(precipitation[:time]).strftime('%r')}>"
     context = []
@@ -146,8 +149,11 @@ class ForecastPresenter < SimpleDelegator
 
     summary = hourly.dig(:summary)
 
-    max_temp = hourly.dig(:data)&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
-    min_temp = hourly.dig(:data)&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
+    now = Time.now.to_i
+    data = hourly.dig(:data).select { |d| d[:time] > now }
+
+    max_temp = data&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
+    min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
 
     context = []
     context << "Low *#{min_temp[:apparentTemperature].round}°#{temp_unit}* at <!date^#{min_temp[:time]}^{time}|#{Time.at(min_temp[:time]).strftime('%r')}>"
@@ -179,8 +185,11 @@ class ForecastPresenter < SimpleDelegator
 
     summary = daily.dig(:summary)
 
-    max_temp = daily.dig(:data)&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
-    min_temp = daily.dig(:data)&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
+    now = Time.now.to_i
+    data = daily.dig(:data).select { |d| d[:time] > now }
+
+    max_temp = data&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
+    min_temp = data&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
 
     context = []
     context << "Low *#{min_temp[:apparentTemperatureMin].round}°#{temp_unit}* on <!date^#{min_temp[:apparentTemperatureMinTime]}^{date_long}|#{Time.at(min_temp[:apparentTemperatureMinTime]).strftime('%A, %B %-d')}>"
