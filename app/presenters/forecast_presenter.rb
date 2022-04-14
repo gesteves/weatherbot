@@ -239,7 +239,7 @@ class ForecastPresenter < SimpleDelegator
         data: {
           labels: #{data.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime(time_format) }},
           datasets: [{
-            label: "Chance of #{data.map { |d| d[:precipType] }&.find(&:present?) || 'precipitation'}",
+            label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             fill: false,
             borderColor: "blue",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
