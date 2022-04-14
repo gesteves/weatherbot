@@ -48,7 +48,7 @@ class SlackController < ApplicationController
   end
 
   def interactions
-    if @actions.include? 'open_preferences'
+    if @actions&.include? 'open_preferences'
       open_preferences
     end
     render plain: "OK", status: 200
