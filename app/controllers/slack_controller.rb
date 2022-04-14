@@ -51,6 +51,10 @@ class SlackController < ApplicationController
     if @actions&.include? 'open_preferences'
       open_preferences
     end
+    if @payload_type == 'view_submission'
+      logger.info "callback ID: #{@payload[:callback_id]}"
+      save_preferences
+    end
     render plain: "OK", status: 200
   end
 
@@ -89,20 +93,20 @@ class SlackController < ApplicationController
 
   def parse_interaction
     begin
-      payload = JSON.parse(params[:payload], symbolize_names: true)
+      @payload = JSON.parse(params[:payload], symbolize_names: true)
     rescue
       return render plain: "Bad Request", status: 400
     end
 
-    logger.info payload
-
-    @token = payload[:token]
-    @user = payload.dig(:user, :id)
-    @team = payload.dig(:team, :id)
-    @channel = payload.dig(:channel, :id)
-    @ts = payload.dig(:message, :ts)
-    @actions = payload.dig(:actions)&.map { |a| a[:action_id] }
-    @trigger_id = payload.dig(:trigger_id)
+    @payload_type = @payload[:type]
+    logger.info "Payload type: #{@payload_type}"
+    @token = @payload[:token]
+    @user = @payload.dig(:user, :id)
+    @team = @payload.dig(:team, :id)
+    @channel = @payload.dig(:channel, :id)
+    @ts = @payload.dig(:message, :ts)
+    @actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
+    @trigger_id = @payload.dig(:trigger_id)
   end
 
   def parse_slash
@@ -135,6 +139,11 @@ class SlackController < ApplicationController
 
   def open_preferences
     OpenPreferencesWorker.perform_async(@team, @user, @trigger_id)
+  end
+
+  def save_preferences
+    user = User.find_by(slack_id: @user)
+
   end
 
   # SLASH HANDLERS
