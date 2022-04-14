@@ -113,6 +113,13 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
+    precipitation = minutely.dig(:data)&.find { |a| a[:precipProbability] > 0 } || minutely.dig(:data)&.first
+    chance = number_to_percentage(precipitation[:precipProbability] * 100, precision: 0)
+    date = "<!date^#{precipitation[:time]}^{time}|#{Time.at(precipitation[:time]).strftime('%r')}>"
+    context = []
+    context << "Chance of precipitation *#{chance}*"
+    context << "at #{date}" if precipitation[:precipProbability] > 0
+
     [
       {
         type: "section",
@@ -120,6 +127,15 @@ class ForecastPresenter < SimpleDelegator
           type: "mrkdwn",
           text: "*Next hour*\n#{summary}"
         }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context.join(" ")
+          }
+        ]
       }
     ]
   end
