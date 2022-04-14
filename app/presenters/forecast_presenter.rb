@@ -120,7 +120,7 @@ class ForecastPresenter < SimpleDelegator
     chance = number_to_percentage(precipitation[:precipProbability] * 100, precision: 0)
     date = "<!date^#{precipitation[:time]}^{time}|#{Time.at(precipitation[:time]).strftime('%r')}>"
     context = []
-    context << "Chance of precipitation *#{chance}*"
+    context << "*#{chance}* chance of precipitation"
     context << "at #{date}" if precipitation[:precipProbability] > 0
 
     [
