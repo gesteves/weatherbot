@@ -265,8 +265,7 @@ class ForecastPresenter < SimpleDelegator
                   display: false
                 },
                 ticks: {
-                  maxTicksLimit: 28,
-                  callback: (val) => { return val + "%"; }
+                  maxTicksLimit: 28
                 }
               },
             ],
@@ -279,7 +278,8 @@ class ForecastPresenter < SimpleDelegator
                 ticks: {
                   beginAtZero: true,
                   suggestedMin: 0,
-                  suggestedMax: 100
+                  suggestedMax: 100,
+                  callback: (val) => { return val + "%"; }
                 }
               },
             ],
