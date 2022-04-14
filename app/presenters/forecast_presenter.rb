@@ -130,8 +130,8 @@ class ForecastPresenter < SimpleDelegator
 
     summary = hourly.dig(:summary)
 
-    max_temp = minutely.dig(:data)&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
-    min_temp = minutely.dig(:data)&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
+    max_temp = hourly.dig(:data)&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
+    min_temp = hourly.dig(:data)&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
 
     context = []
     context << "Low *#{min_temp[:apparentTemperature]}°#{temp_unit}* at <!date^#{min_temp[:time]}^{time}|#{Time.at(min_temp[:time]).strftime('%r')}>"
