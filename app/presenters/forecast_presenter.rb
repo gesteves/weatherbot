@@ -92,6 +92,11 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
+    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
+    high = temps.max.round
+    low = temps.min.round
+    context = "Low *#{low}°#{temp_unit}* | High *#{high}°#{temp_unit}*"
+
     [
       {
         type: "section",
@@ -99,6 +104,15 @@ class ForecastPresenter < SimpleDelegator
           type: "mrkdwn",
           text: "*Next hour*\n#{summary}"
         }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context
+          }
+        ]
       }
     ]
   end
@@ -109,7 +123,7 @@ class ForecastPresenter < SimpleDelegator
 
     summary = hourly.dig(:summary)
 
-    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:temperature]}
+    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
     high = temps.max.round
     low = temps.min.round
     context = "Low *#{low}°#{temp_unit}* | High *#{high}°#{temp_unit}*"
