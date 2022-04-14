@@ -43,6 +43,7 @@ class ForecastPresenter < SimpleDelegator
     blocks << precipitation_line_chart(data: dig(:hourly, :data)&.slice(0, 24), time_format: '%l %P')
     blocks << divider
     blocks << daily_block
+    blocks << precipitation_line_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
     blocks.flatten.compact
   end
 
