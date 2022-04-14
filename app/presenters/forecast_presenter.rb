@@ -231,7 +231,7 @@ class ForecastPresenter < SimpleDelegator
     ]
   end
 
-  def precipitation_chart(data:, time_format:, ticks: 10)
+  def precipitation_chart(data:, time_format:, ticks: 24)
     return if data.blank?
 
     chart_config = <<~CONFIG
