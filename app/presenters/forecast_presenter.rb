@@ -138,8 +138,8 @@ class ForecastPresenter < SimpleDelegator
     min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
 
     context = []
-    context << "Low *#{min_temp[:apparentTemperature].round}°#{temp_unit}* at <!date^#{min_temp[:time]}^{time}|#{Time.at(min_temp[:time]).strftime('%r')}>"
-    context << "High *#{max_temp[:apparentTemperature].round}°#{temp_unit}* at <!date^#{max_temp[:time]}^{time}|#{Time.at(max_temp[:time]).strftime('%r')}>"
+    context << "Low *#{min_temp[:apparentTemperature].round}°#{temp_unit}*"
+    context << "High *#{max_temp[:apparentTemperature].round}°#{temp_unit}*"
 
     [
       {
