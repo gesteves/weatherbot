@@ -8,7 +8,11 @@ module GoogleMaps
       HTTParty.get("https://maps.googleapis.com/maps/api/geocode/json", query: query).body
     end
     response = JSON.parse(body, symbolize_names: true)
-    raise response[:status] unless response[:status] == 'OK'
+
+    unless response[:status] == 'OK'
+      logger.error response[:status] unless response[:status] == 'OK'
+      return
+    end
 
     {
       formatted_address: response.dig(:results, 0, :formatted_address),

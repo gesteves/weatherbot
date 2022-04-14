@@ -1,9 +1,5 @@
 module DarkSky
-  def self.forecast(location:, unit_system: 'auto')
-    geocoded = GoogleMaps.geocode(location)
-    lat = geocoded[:lat]
-    long = geocoded[:long]
-
+  def self.forecast(location:, lat:, long:, unit_system: 'auto')
     body = Rails.cache.fetch("darksky/forecast/#{lat}/#{long}/#{unit_system}", expires_in: 10.minutes) do
       query = {
         units: unit_system
@@ -12,7 +8,7 @@ module DarkSky
     end
 
     response = JSON.parse(body, symbolize_names: true)
-    response[:formatted_address] = geocoded[:formatted_address]
+    response[:location] = location
     response
   end
 end
