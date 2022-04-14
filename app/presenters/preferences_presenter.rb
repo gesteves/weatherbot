@@ -45,5 +45,6 @@ class PreferencesPresenter < SimpleDelegator
 				}
 			]
 		}
+    blocks
   end
 end
