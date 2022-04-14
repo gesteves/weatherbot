@@ -21,6 +21,7 @@ class PreferencesPresenter < SimpleDelegator
     blocks = []
     blocks << {
 			type: "input",
+      block_id: "location",
 			element: {
 				type: "plain_text_input",
 				action_id: "location",
