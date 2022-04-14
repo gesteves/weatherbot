@@ -14,11 +14,11 @@ class ForecastPresenter < SimpleDelegator
 			type: "divider"
 		}
 
-    blocks.append(alerts_block)
-    blocks.append(currently_block)
-    blocks.append(minutely_block)
-    blocks.append(hourly_block)
-    blocks.append(daily_block)
+    blocks << alerts_block
+    blocks << currently_block
+    blocks << minutely_block
+    blocks << hourly_block
+    blocks << daily_block
 
     blocks << {
 			type: "divider"
@@ -32,7 +32,7 @@ class ForecastPresenter < SimpleDelegator
 				}
 			]
 		}
-    blocks.compact
+    blocks.flatten.compact
   end
 
   private
@@ -56,7 +56,7 @@ class ForecastPresenter < SimpleDelegator
 
   def currently_block
     currently = dig(:currently)
-    return [] if currently.blank?
+    return if currently.blank?
 
     summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:temperature).round}°#{temp_unit} #{currently.dig(:summary).sub(/\.$/, '')}.".strip
 
