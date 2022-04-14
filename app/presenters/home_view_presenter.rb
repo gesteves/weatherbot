@@ -39,7 +39,7 @@ class HomeViewPresenter < SimpleDelegator
             text: "Preferences",
             "emoji": true
           },
-          "value": "preferences"
+          action_id: "open_preferences"
         }
       ]
     }

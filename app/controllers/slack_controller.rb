@@ -91,14 +91,14 @@ class SlackController < ApplicationController
       return render plain: "Bad Request", status: 400
     end
 
-    logger.info payload
-
     @token = payload[:token]
     @user = payload.dig(:user, :id)
     @team = payload.dig(:team, :id)
     @channel = payload.dig(:channel, :id)
     @ts = payload.dig(:message, :ts)
-    @answer = payload.dig(:actions)&.find { |a| a[:action_id] == "answer" }.dig(:value)
+    @actions = payload.dig(:actions)&.map { |a| a[:action_id] }
+
+    logger.info @actions.to_s
   end
 
   def parse_slash
