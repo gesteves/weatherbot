@@ -37,6 +37,24 @@ class ForecastPresenter < SimpleDelegator
 
   private
 
+  def icon_to_emoji(icon)
+    mapping = {
+      'clear-day': ':sunny:',
+      'clear-night': ':moon:',
+      'rain': ':rain_cloud:',
+      'snow': ':snowflake:',
+      'sleet': ':snow_cloud:',
+      'wind': ':dash:',
+      'fog': ':fog:',
+      'cloudy': ':cloud:',
+      'partly-cloudy-day': ':partly_sunny:',
+      'partly-cloudy-night': ':cloud:',
+      'thunderstorm': ':lightning:',
+      'tornado': ':tornado:'
+    }.with_indifferent_access
+    mapping[icon] || ''
+  end
+
   def temp_unit
     dig(:flags, :units) == 'us' ? 'F' : 'C'
   end
@@ -78,7 +96,7 @@ class ForecastPresenter < SimpleDelegator
     currently = dig(:currently)
     return if currently.blank?
 
-    summary = "#{currently.dig(:summary).sub(/\.$/, '')}, #{currently.dig(:temperature).round}°#{temp_unit}"
+    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary).sub(/\.$/, '')}, #{currently.dig(:temperature).round}°#{temp_unit}"
 
     context = []
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
@@ -93,7 +111,7 @@ class ForecastPresenter < SimpleDelegator
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Right now*\n#{summary}"
+          text: "*Right now*\n#{summary.strip}"
         }
       },
       {
@@ -112,14 +130,14 @@ class ForecastPresenter < SimpleDelegator
     minutely = dig(:minutely)
     return if minutely.blank?
 
-    summary = minutely.dig(:summary)
+    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
 
     [
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Next hour*\n#{summary}"
+          text: "*Next hour*\n#{summary.strip}"
         }
       }
     ]
@@ -129,7 +147,7 @@ class ForecastPresenter < SimpleDelegator
     hourly = dig(:hourly)
     return if hourly.blank?
 
-    summary = hourly.dig(:summary)
+    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}"
 
     now = Time.now.to_i
     data = hourly.dig(:data)&.select { |d| d[:time] > now }
@@ -146,7 +164,7 @@ class ForecastPresenter < SimpleDelegator
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Next 24 hours*\n#{summary}"
+          text: "*Next 24 hours*\n#{summary.strip}"
         }
       },
       {
@@ -165,7 +183,7 @@ class ForecastPresenter < SimpleDelegator
     daily = dig(:daily)
     return if daily.blank?
 
-    summary = daily.dig(:summary)
+    summary = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}"
 
     now = Time.now.to_i
     data = daily.dig(:data)&.select { |d| d[:time] > now }
@@ -182,7 +200,7 @@ class ForecastPresenter < SimpleDelegator
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Next 7 days*\n#{summary}"
+          text: "*Next 7 days*\n#{summary.strip}"
         }
       },
       {
