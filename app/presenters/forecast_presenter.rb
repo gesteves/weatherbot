@@ -92,7 +92,7 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
-    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
+    temps = minutely.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
     high = temps.max.round
     low = temps.min.round
     context = "Low *#{low}°#{temp_unit}* | High *#{high}°#{temp_unit}*"
