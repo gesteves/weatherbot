@@ -116,7 +116,7 @@ class SlackController < ApplicationController
   end
 
   def app_home_opened
-    #UpdateAppHomeWorker.perform_async(@team, @user)
+    UpdateAppHomeWorker.perform_async(@team, @user)
   end
 
 

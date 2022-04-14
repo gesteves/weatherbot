@@ -55,4 +55,8 @@ class User < ApplicationRecord
   def mention
     "<@#{slack_id}>"
   end
+
+  def update_app_home
+    team.update_app_home(user_id: slack_id, view: HomeViewPresenter.new(self).to_view)
+  end
 end
