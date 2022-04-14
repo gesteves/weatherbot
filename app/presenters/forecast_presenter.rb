@@ -274,9 +274,6 @@ class ForecastPresenter < SimpleDelegator
                 scaleLabel: {
                   display: false
                 },
-                gridLines: {
-                  display: false
-                },
                 ticks: {
                   beginAtZero: true,
                   suggestedMin: 0,
