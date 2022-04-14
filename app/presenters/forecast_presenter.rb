@@ -265,6 +265,9 @@ class ForecastPresenter < SimpleDelegator
                 },
                 gridLines: {
                   display: false
+                },
+                ticks: {
+                  maxTicksLimit: 28
                 }
               },
             ],
