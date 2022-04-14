@@ -50,6 +50,9 @@ class HomeViewPresenter < SimpleDelegator
   def forecast_blocks
     blocks = ForecastPresenter.new(forecast).to_blocks
     blocks << {
+			type: "divider"
+		}
+    blocks << {
       type: "actions",
       elements: [
         {

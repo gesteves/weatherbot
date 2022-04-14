@@ -19,19 +19,6 @@ class ForecastPresenter < SimpleDelegator
     blocks << minutely_block
     blocks << hourly_block
     blocks << daily_block
-
-    blocks << {
-			type: "divider"
-		}
-		blocks << {
-			type: "context",
-			elements: [
-				{
-					type: "mrkdwn",
-					text: "Powered by <https://darksky.net/poweredby/|Dark Sky>"
-				}
-			]
-		}
     blocks.flatten.compact
   end
 
