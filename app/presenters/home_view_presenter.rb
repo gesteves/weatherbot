@@ -12,7 +12,7 @@ class HomeViewPresenter < SimpleDelegator
     }
   end
 
-  def onboarding_view
+  def onboarding_blocks
     blocks = []
     blocks << {
       type: "section",
@@ -55,7 +55,7 @@ class HomeViewPresenter < SimpleDelegator
     blocks
   end
 
-  def forecast_view
-
+  def forecast_blocks
+    []
   end
 end
