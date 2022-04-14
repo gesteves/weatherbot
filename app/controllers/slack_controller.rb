@@ -48,11 +48,13 @@ class SlackController < ApplicationController
   end
 
   def interactions
-    if @actions&.include? 'open_preferences'
-      open_preferences
-    end
-    if @payload_type == 'view_submission'
-      logger.info "callback ID: #{@payload[:callback_id]}"
+    case @payload_type
+    when 'block_actions'
+      actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
+      open_preferences if actions&.include? 'open_preferences'
+    when 'view_submission'
+      logger.info "callback ID: #{@payload.dig(:context, :callback_id)}"
+      logger.info "values: #{@payload.dig(:context, :state, :values)}"
       save_preferences
     end
     render plain: "OK", status: 200
@@ -99,13 +101,11 @@ class SlackController < ApplicationController
     end
 
     @payload_type = @payload[:type]
-    logger.info "Payload type: #{@payload_type}"
     @token = @payload[:token]
     @user = @payload.dig(:user, :id)
     @team = @payload.dig(:team, :id)
     @channel = @payload.dig(:channel, :id)
     @ts = @payload.dig(:message, :ts)
-    @actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
     @trigger_id = @payload.dig(:trigger_id)
   end
 
