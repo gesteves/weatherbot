@@ -161,15 +161,31 @@ class ForecastPresenter < SimpleDelegator
     daily = dig(:daily)
     return if daily.blank?
 
-    text = daily.dig(:summary)
+    summary = daily.dig(:summary)
+
+    max_temp = daily.dig(:data)&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
+    min_temp = daily.dig(:data)&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
+
+    context = []
+    context << "Low *#{min_temp[:apparentTemperatureMin].round}°#{temp_unit}* at <!date^#{min_temp[:apparentTemperatureMinTime]}^{{date_short}}|#{Time.at(min_temp[:apparentTemperatureMinTime]).strftime('%b %-d')}>"
+    context << "High *#{max_temp[:apparentTemperatureMax].round}°#{temp_unit}* at <!date^#{max_temp[:apparentTemperatureMaxTime]}^{{date_short}}|#{Time.at(max_temp[:apparentTemperatureMaxTime]).strftime('%b %-d')}>"
 
     [
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "*Next 7 days*\n#{text}"
+          text: "*Next 7 days*\n#{summary}"
         }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context.join(' | ')
+          }
+        ]
       }
     ]
   end
