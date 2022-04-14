@@ -6,7 +6,7 @@ class PostForecastWorker < ApplicationWorker
 
     unless geocoded[:status] == 'OK'
       logger.error geocoded[:status]
-      Slack.post_to_webhook(response_url: response_url, text: "Sorry, I don’t understand that location!", blocks: blocks, response_type: "ephemeral")
+      Slack.post_to_webhook(response_url: response_url, text: "Sorry, I don’t understand that location!", response_type: "ephemeral")
       return
     end
 
