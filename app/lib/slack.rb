@@ -211,7 +211,7 @@ class Slack
   # @param view [Hash] A view payload.
   # @see https://api.slack.com/methods/views.open
   # @return [String] A JSON response.
-  def views_open(access_token:, user_id:, view:)
+  def views_open(access_token:, trigger_id:, view:)
     params = {
       trigger_id: trigger_id,
       view: view
