@@ -58,7 +58,7 @@ class ForecastPresenter < SimpleDelegator
     currently = dig(:currently)
     return if currently.blank?
 
-    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:temperature).round}°#{temp_unit} #{currently.dig(:summary).sub(/\.$/, '')}.".strip
+    summary = "#{currently.dig(:temperature).round}°#{temp_unit} #{currently.dig(:summary).sub(/\.$/, '')}."
 
     context = []
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
@@ -90,7 +90,7 @@ class ForecastPresenter < SimpleDelegator
     minutely = dig(:minutely)
     return if minutely.blank?
 
-    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}".strip
+    summary = minutely.dig(:summary)
 
     [
       {
@@ -107,7 +107,7 @@ class ForecastPresenter < SimpleDelegator
     hourly = dig(:hourly)
     return if hourly.blank?
 
-    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}".strip
+    summary = hourly.dig(:summary)
 
     apparent_temperatures = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
     high = apparent_temperatures.max.round
@@ -138,7 +138,7 @@ class ForecastPresenter < SimpleDelegator
     daily = dig(:daily)
     return if daily.blank?
 
-    text = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}".strip
+    text = daily.dig(:summary)
 
     [
       {
@@ -149,23 +149,5 @@ class ForecastPresenter < SimpleDelegator
         }
       }
     ]
-  end
-
-  def icon_to_emoji(icon)
-    mapping = {
-      'clear-day': ':sunny:',
-      'clear-night': ':moon:',
-      'rain': ':rain_cloud:',
-      'snow': ':snowflake:',
-      'sleet': ':snow_cloud:',
-      'wind': ':dash:',
-      'fog': ':fog:',
-      'cloudy': ':cloud:',
-      'partly-cloudy-day': ':partly_sunny:',
-      'partly-cloudy-night': ':cloud:',
-      'thunderstorm': ':lightning:',
-      'tornado': ':tornado:'
-    }.with_indifferent_access
-    mapping[icon] || ''
   end
 end
