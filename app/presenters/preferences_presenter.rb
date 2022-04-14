@@ -10,7 +10,7 @@ class PreferencesPresenter < SimpleDelegator
       submit: {
         type: "plain_text",
         text: "Save"
-      }
+      },
       blocks: blocks
     }
   end
