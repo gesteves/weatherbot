@@ -25,15 +25,7 @@ class HomeViewPresenter < SimpleDelegator
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "Welcome to #{team.bot_mention}! I can show you detailed weather forecasts for your location, right here on my Home tab, powered by <https://darksky.net/poweredby/|Dark Sky>. I can also give you weather forecast for any location in the world, just type `/weather` followed by a location (like a city, zip code, or even a specific address) in any channel."
-      }
-    }
-
-    blocks << {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: "Before I can show you your personalized forecast here, though, I need to know where you’re located. Simply click the button below to set it up:"
+        text: "Welcome to #{team.bot_mention}! I can show you detailed weather forecasts for your location, right here on my Home tab, powered by <https://darksky.net/poweredby/|Dark Sky>.\n\nI can also give you a weather forecast for any location in the world, by typing `/weather` followed by a location, such as:\n\n• `/weather in washington, dc`\n• `/weather 20001`\n• `/weather at 1600 pennsylvania avenue nw, washington, dc`.\n\nBefore I can show you your personalized forecast here, though, I need to know where you’re located. Simply click the button below to set it up:"
       }
     }
 
