@@ -7,14 +7,6 @@ module GoogleMaps
       }
       HTTParty.get("https://maps.googleapis.com/maps/api/geocode/json", query: query).body
     end
-    response = JSON.parse(body, symbolize_names: true)
-
-    return unless response[:status] == 'OK'
-
-    {
-      formatted_address: response.dig(:results, 0, :formatted_address),
-      lat: response.dig(:results, 0, :geometry, :location, :lat),
-      long: response.dig(:results, 0, :geometry, :location, :lng)
-    }
+    JSON.parse(body, symbolize_names: true)
   end
 end
