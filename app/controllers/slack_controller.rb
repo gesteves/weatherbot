@@ -142,8 +142,14 @@ class SlackController < ApplicationController
 
   def save_preferences
     location = @values.dig(:location, :location, :value)
-    logger.info location
+    logger.info @values
+    logger.info @values.dig(:location)
+    logger.info @values.dig(:location, :location)
+    logger.info @values.dig(:location, :location, :value)
     user = User.find_by(slack_id: @user)
+    user.location = location
+    user.save!
+    UpdateAppHomeWorker.perform_async(@team, @user)
   end
 
   # SLASH HANDLERS
