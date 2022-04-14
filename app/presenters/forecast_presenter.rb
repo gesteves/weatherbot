@@ -37,11 +37,13 @@ class ForecastPresenter < SimpleDelegator
     blocks << currently_block
     blocks << divider
     blocks << minutely_block
-    blocks << next_hour_chart
+    blocks << precipitation_chart(data: dig(:minutely, :data), time_format: '%l:%M')
     blocks << divider
     blocks << hourly_block
+    blocks << precipitation_chart(data: dig(:hourly, :data), time_format: '%l %P')
     blocks << divider
     blocks << daily_block
+    blocks << precipitation_chart(data: dig(:daily, :data), time_format: '%A')
     blocks.flatten.compact
   end
 
@@ -229,27 +231,26 @@ class ForecastPresenter < SimpleDelegator
     ]
   end
 
-  def next_hour_chart
-    minutely = dig(:minutely)
-    return if minutely.blank?
+  def precipitation_chart(data:, time_format:)
+    return if data.blank?
 
     chart_config = <<~CONFIG
       {
         type: "line",
         data: {
-          labels: #{minutely[:data]&.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M') }},
+          labels: #{data.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime(time_format) }},
           datasets: [{
             label: "Chance of precipitation",
             fill: false,
             borderColor: "blue",
-            data: #{minutely[:data].map { |d| d[:precipProbability] * 100 }},
+            data: #{data.map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0
           }]
         },
         options: {
           title: {
             display: true,
-            text: "Chance of #{minutely[:data]&.map { |d| d[:precipType] }&.find(&:present?) || 'precipitation'}",
+            text: "Chance of #{data.map { |d| d[:precipType] }&.find(&:present?) || 'precipitation'}",
           },
           legend: {
             display: false
@@ -265,7 +266,7 @@ class ForecastPresenter < SimpleDelegator
                   display: false
                 },
                 ticks: {
-                  maxTicksLimit: 28
+                  maxTicksLimit: #{(data.size/2).round - 2}
                 }
               },
             ],
