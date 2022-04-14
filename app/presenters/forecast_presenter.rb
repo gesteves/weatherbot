@@ -28,7 +28,7 @@ class ForecastPresenter < SimpleDelegator
 			elements: [
 				{
 					type: "mrkdwn",
-					text: "<https://darksky.net/poweredby/|Powered by Dark Sky>"
+					text: "Powered by <https://darksky.net/poweredby/|Dark Sky>"
 				}
 			]
 		}
