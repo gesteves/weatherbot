@@ -53,9 +53,9 @@ class ForecastPresenter < SimpleDelegator
     "#{speed.round} #{unit}"
   end
 
-  def wind_bearing(bearing)
+  def wind_direction(bearing)
     # https://stackoverflow.com/a/7490772
-    value = (bearing/22.5) + 0.5
+    value = ((bearing + 180)/22.5) + 0.5
     directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
     directions[(value % 16)]
   end
@@ -84,7 +84,7 @@ class ForecastPresenter < SimpleDelegator
     context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
     context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
     context << "UV index *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
-    context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_bearing(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
+    context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_direction(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
 
     [
       {
