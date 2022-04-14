@@ -113,9 +113,9 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
-    max_precipitation = minutely.dig(:data)&.max {|a,b| a[:precipProbability] <=> b[:precipProbability] }
+    max_precipitation = minutely.dig(:data)&.max { |a,b| a[:precipProbability] <=> b[:precipProbability] }
     chance = number_to_percentage(max_precipitation[:precipProbability] * 100, precision: 0)
-    chance = "#{chance} at <!date^#{max_precipitation[:time}^{time}|#{Time.at(max_precipitation[:time).strftime('%r')}>" if max_precipitation[:precipProbability] > 0
+    chance = "#{chance} at <!date^#{max_precipitation[:time]}^{time}|#{Time.at(max_precipitation[:time).strftime('%r')}>" if max_precipitation[:precipProbability] > 0
     context = "Chance of precipitation *#{chance}*"
 
     [
