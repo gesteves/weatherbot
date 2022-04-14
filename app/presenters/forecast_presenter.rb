@@ -60,22 +60,28 @@ class ForecastPresenter < SimpleDelegator
     directions[(value % 16)]
   end
 
-  def alerts_block
-    return if dig(:alerts).nil?
+  def alert_emoji(severity)
+    return ':information_source:' if severity.blank?
+
     severity = {
       'advisory': ':information_source:',
       'watch': ':warning:',
       'warning': ':rotating_light:'
     }.with_indifferent_access
 
-    emoji = severity[alert[:severity]] || ':information_source:'
+    severity[severity]
+  end
+
+  def alerts_block
+    return if dig(:alerts).nil?
+
 
     [
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: dig(:alerts).map { |alert| "#{emoji} <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
+          text: dig(:alerts).map { |alert| "#{alert_emoji(alert[:severity])} <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
         }
 		  }
     ]
