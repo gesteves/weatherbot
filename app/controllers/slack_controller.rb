@@ -53,8 +53,8 @@ class SlackController < ApplicationController
       actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
       open_preferences if actions&.include? 'open_preferences'
     when 'view_submission'
-      logger.info "callback ID: #{@payload.dig(:view, :context, :callback_id)}"
-      logger.info "values: #{@payload.dig(:view, :context, :state, :values)}"
+      logger.info "callback ID: #{@payload.dig(:view, :callback_id)}"
+      logger.info "values: #{@payload.dig(:view, :state, :values)}"
       save_preferences
     end
     render plain: "OK", status: 200
