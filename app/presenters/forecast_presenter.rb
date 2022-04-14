@@ -41,6 +41,25 @@ class ForecastPresenter < SimpleDelegator
     dig(:flags, :units) == 'us' ? 'F' : 'C'
   end
 
+  def wind_speed(speed)
+    unit_system = dig(:flags, :units)
+    units = {
+      'ca': "km/h",
+      'uk2': 'mph',
+      'us': 'mph',
+      'si': 'm/s'
+    }.with_indifferent_access
+    unit = units[unit_system]
+    "#{speed.round} #{unit}"
+  end
+
+  def wind_bearing(bearing)
+    # https://stackoverflow.com/a/7490772
+    value = (bearing/22.5) + 0.5
+    directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+    directions[(value % 16)]
+  end
+
   def alerts_block
     return if dig(:alerts).nil?
     [
@@ -58,13 +77,14 @@ class ForecastPresenter < SimpleDelegator
     currently = dig(:currently)
     return if currently.blank?
 
-    summary = "#{currently.dig(:temperature).round}°#{temp_unit} #{currently.dig(:summary).sub(/\.$/, '')}."
+    summary = "#{currently.dig(:summary).sub(/\.$/, '')}, #{currently.dig(:temperature).round}°#{temp_unit}"
 
     context = []
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
     context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
     context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
     context << "UV index *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
+    context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_bearing(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
 
     [
       {
