@@ -97,8 +97,9 @@ class SlackController < ApplicationController
     @channel = payload.dig(:channel, :id)
     @ts = payload.dig(:message, :ts)
     @actions = payload.dig(:actions)&.map { |a| a[:action_id] }
-
-    logger.info @actions.to_s
+    @trigger_id = payload.dig(:trigger_id)
+    logger.info "actions: #{@actions.to_s}"
+    logger.info "trigger id: #{@trigger_id}"
   end
 
   def parse_slash
