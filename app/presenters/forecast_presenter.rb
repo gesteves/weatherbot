@@ -113,6 +113,11 @@ class ForecastPresenter < SimpleDelegator
 
     summary = minutely.dig(:summary)
 
+    max_precipitation = minutely.dig(:data)&.max {|a,b| a[:precipProbability] <=> b[:precipProbability] }
+    chance = number_to_percentage(max_precipitation[:precipProbability] * 100, precision: 0)
+    chance = "#{chance} at <!date^#{max_precipitation[:time}^{time}|#{Time.at(max_precipitation[:time).strftime('%r')}>" if max_precipitation[:precipProbability] > 0
+    context = "Chance of precipitation *#{chance}*"
+
     [
       {
         type: "section",
@@ -120,6 +125,15 @@ class ForecastPresenter < SimpleDelegator
           type: "mrkdwn",
           text: "*Next hour*\n#{summary}"
         }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context
+          }
+        ]
       }
     ]
   end
@@ -130,7 +144,7 @@ class ForecastPresenter < SimpleDelegator
 
     summary = hourly.dig(:summary)
 
-    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature]}
+    temps = hourly.dig(:data)&.slice(0, 24)&.map { |d| d[:apparentTemperature] }
     high = temps.max.round
     low = temps.min.round
     context = "Low *#{low}°#{temp_unit}* | High *#{high}°#{temp_unit}*"
