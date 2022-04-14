@@ -37,13 +37,13 @@ class ForecastPresenter < SimpleDelegator
     blocks << currently_block
     blocks << divider
     blocks << minutely_block
-    blocks << precipitation_chart(data: dig(:minutely, :data), time_format: '%l:%M')
+    blocks << precipitation_chart(data: dig(:minutely, :data), time_format: '%l:%M', ticks: 28)
     blocks << divider
     blocks << hourly_block
-    blocks << precipitation_chart(data: dig(:hourly, :data), time_format: '%l %P')
+    blocks << precipitation_chart(data: dig(:hourly, :data), time_format: '%l %P', ticks: 10)
     blocks << divider
     blocks << daily_block
-    blocks << precipitation_chart(data: dig(:daily, :data), time_format: '%A')
+    blocks << precipitation_chart(data: dig(:daily, :data), time_format: '%A', ticks: 7)
     blocks.flatten.compact
   end
 
@@ -231,7 +231,7 @@ class ForecastPresenter < SimpleDelegator
     ]
   end
 
-  def precipitation_chart(data:, time_format:)
+  def precipitation_chart(data:, time_format:, ticks:)
     return if data.blank?
 
     chart_config = <<~CONFIG
@@ -266,7 +266,7 @@ class ForecastPresenter < SimpleDelegator
                   display: false
                 },
                 ticks: {
-                  maxTicksLimit: #{(data.size/2).round - 2}
+                  maxTicksLimit: #{ticks}
                 }
               },
             ],
