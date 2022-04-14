@@ -48,6 +48,21 @@ class HomeViewPresenter < SimpleDelegator
   end
 
   def forecast_blocks
-    ForecastPresenter.new(forecast).to_blocks
+    blocks = ForecastPresenter.new(forecast).to_blocks
+    blocks << {
+      type: "actions",
+      elements: [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Preferences",
+            "emoji": true
+          },
+          action_id: "open_preferences"
+        }
+      ]
+    }
+    blocks
   end
 end
