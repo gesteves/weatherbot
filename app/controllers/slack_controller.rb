@@ -53,9 +53,8 @@ class SlackController < ApplicationController
       actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
       open_preferences if actions&.include? 'open_preferences'
     when 'view_submission'
-      logger.info "callback ID: #{@payload.dig(:view, :callback_id)}"
-      logger.info "values: #{@payload.dig(:view, :state, :values)}"
-      save_preferences
+      @values = @payload.dig(:view, :state, :values)
+      save_preferences if @payload.dig(:view, :callback_id) == 'preferences_modal'
     end
     render plain: "", status: 200
   end
@@ -142,8 +141,9 @@ class SlackController < ApplicationController
   end
 
   def save_preferences
+    location = @values.dig(:location, :location, :value)
+    logger.info location
     user = User.find_by(slack_id: @user)
-
   end
 
   # SLASH HANDLERS
