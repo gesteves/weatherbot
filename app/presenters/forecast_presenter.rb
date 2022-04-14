@@ -251,7 +251,12 @@ class ForecastPresenter < SimpleDelegator
             display: false,
           },
           legend: {
-            display: true
+            display: true,
+            position: 'bottom',
+            align: 'start',
+            labels: {
+              boxWidth: 1
+            }
           },
           scales: {
             xAxes: [
