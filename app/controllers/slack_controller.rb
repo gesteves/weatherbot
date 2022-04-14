@@ -91,6 +91,8 @@ class SlackController < ApplicationController
       return render plain: "Bad Request", status: 400
     end
 
+    logger.info payload
+
     @token = payload[:token]
     @user = payload.dig(:user, :id)
     @team = payload.dig(:team, :id)
