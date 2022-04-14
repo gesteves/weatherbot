@@ -130,7 +130,7 @@ class SlackController < ApplicationController
   # SLASH HANDLERS
 
   def slash_weather
-    location = @text.strip.sub(/^(at|in|on)/i, '')
+    location = @text.sub(/^\s+(at|in|on)\s+/i, '')
     PostForecastWorker.perform_async(location, @response_url)
   end
 end
