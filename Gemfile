@@ -60,6 +60,9 @@ gem "sidekiq"
 # Caching
 gem "dalli"
 
+# Charts for forecast
+gem "quickchart"
+
 group :production do
   gem "lograge"
 end

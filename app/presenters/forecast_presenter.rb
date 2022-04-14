@@ -15,6 +15,7 @@ class ForecastPresenter < SimpleDelegator
 		}
 
     blocks << alerts_block
+    blocks << divider if alerts_block.present?
     blocks << currently_block
     blocks << minutely_block
     blocks << hourly_block
@@ -22,7 +23,35 @@ class ForecastPresenter < SimpleDelegator
     blocks.flatten.compact
   end
 
+  def long_forecast_blocks
+    blocks = []
+    blocks << {
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:location)}>*"
+			}
+		}
+
+    blocks << divider
+    blocks << alerts_block
+    blocks << divider if alerts_block.present?
+    blocks << currently_block
+    blocks << divider
+    blocks << minutely_block
+    blocks << next_hour_chart
+    blocks << divider
+    blocks << hourly_block
+    blocks << divider
+    blocks << daily_block
+    blocks.flatten.compact
+  end
+
   private
+
+  def divider
+    {	type: "divider" }
+  end
 
   def icon_to_emoji(icon)
     mapping = {
@@ -200,5 +229,61 @@ class ForecastPresenter < SimpleDelegator
         ]
       }
     ]
+  end
+
+  def next_hour_chart
+    minutely = dig(:minutely)
+    return if minutely.blank?
+
+    qc = QuickChart.new(
+      {
+        type: "line",
+        data: {
+          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%k:%l %p') },
+          datasets: [{
+            label: "Chance of precipitation",
+            fill: false,
+            borderColor: 'blue',
+            data: minutely[:data].map { |d| d[:precipProbability] * 100 }
+          }]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'Chance of precipitation',
+          },
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: false
+                },
+              },
+            ],
+            yAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: false
+                },
+              },
+            ],
+          },
+        }
+      },
+      width: 600,
+      height: 300,
+      device_pixel_ratio: 2.0,
+    )
+
+    {
+			"type": "image",
+			"image_url": qc.get_url,
+			"alt_text": "Chance of precipitation for the next hour"
+		}
   end
 end

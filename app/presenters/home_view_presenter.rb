@@ -48,7 +48,7 @@ class HomeViewPresenter < SimpleDelegator
   end
 
   def forecast_blocks
-    blocks = ForecastPresenter.new(forecast).short_forecast_blocks
+    blocks = ForecastPresenter.new(forecast).long_forecast_blocks
     blocks << {
 			type: "divider"
 		}
