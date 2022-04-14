@@ -57,7 +57,7 @@ class SlackController < ApplicationController
       logger.info "values: #{@payload.dig(:view, :state, :values)}"
       save_preferences
     end
-    render plain: "OK", status: 200
+    render plain: "", status: 200
   end
 
   def slash
