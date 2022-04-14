@@ -243,7 +243,8 @@ class ForecastPresenter < SimpleDelegator
             fill: false,
             borderColor: "blue",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
-            pointRadius: 0
+            pointRadius: 0,
+            lineTension: 0.4
           }]
         },
         options: {
