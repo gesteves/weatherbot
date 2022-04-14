@@ -63,13 +63,13 @@ class ForecastPresenter < SimpleDelegator
   def alert_emoji(severity)
     return ':information_source:' if severity.blank?
 
-    severity = {
+    mapping = {
       'advisory': ':information_source:',
       'watch': ':warning:',
       'warning': ':rotating_light:'
     }.with_indifferent_access
 
-    severity[severity]
+    mapping[severity]
   end
 
   def alerts_block
