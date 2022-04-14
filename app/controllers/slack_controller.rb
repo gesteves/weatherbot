@@ -152,6 +152,8 @@ class SlackController < ApplicationController
 
   def slash_weather
     location = @text.sub(/^\s+(at|in|on|for)\s+/i, '')
+
+    logger.info "Forecast requested for: #{location}"
     PostForecastWorker.perform_async(location, @response_url)
   end
 end
