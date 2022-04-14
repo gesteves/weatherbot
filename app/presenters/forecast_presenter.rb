@@ -15,7 +15,6 @@ class ForecastPresenter < SimpleDelegator
 		}
 
     blocks << alerts_block
-    blocks << divider if alerts_block.present?
     blocks << currently_block
     blocks << minutely_block
     blocks << hourly_block
@@ -35,7 +34,6 @@ class ForecastPresenter < SimpleDelegator
 
     blocks << divider
     blocks << alerts_block
-    blocks << divider if alerts_block.present?
     blocks << currently_block
     blocks << divider
     blocks << minutely_block
