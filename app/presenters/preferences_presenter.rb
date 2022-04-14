@@ -25,7 +25,7 @@ class PreferencesPresenter < SimpleDelegator
 				type: "plain_text_input",
 				action_id: "location",
 				placeholder: {
-					type: plain_text,
+					type: "plain_text",
 					text: "For which part of the world do you want to get forecasts?"
 				},
         initial_value: location || ""
