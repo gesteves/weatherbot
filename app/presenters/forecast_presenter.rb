@@ -233,23 +233,23 @@ class ForecastPresenter < SimpleDelegator
     minutely = dig(:minutely)
     return if minutely.blank?
 
-    qc = QuickChart.new(
+    chart_config = <<~CONFIG
       {
         type: "line",
         data: {
-          labels: minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M') },
+          labels: #{minutely[:data].map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime('%l:%M') }},
           datasets: [{
             label: "Chance of precipitation",
             fill: false,
-            borderColor: 'blue',
-            data: minutely[:data].map { |d| d[:precipProbability] * 100 },
+            borderColor: "blue",
+            data: #{minutely[:data].map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0
           }]
         },
         options: {
           title: {
             display: true,
-            text: 'Chance of precipitation',
+            text: "Chance of precipitation",
           },
           legend: {
             display: false
@@ -266,7 +266,7 @@ class ForecastPresenter < SimpleDelegator
                 },
                 ticks: {
                   maxTicksLimit: 28,
-                  callback: "(val) => { return val + '%'; }"
+                  callback: (val) => { return val + "%"; }
                 }
               },
             ],
@@ -285,11 +285,10 @@ class ForecastPresenter < SimpleDelegator
             ],
           },
         }
-      },
-      width: 600,
-      height: 400,
-      device_pixel_ratio: 2.0,
-    )
+      }
+    CONFIG
+
+    qc = QuickChart.new(chart_config, width: 600, height: 400, device_pixel_ratio: 2.0)
 
     {
 			"type": "image",
