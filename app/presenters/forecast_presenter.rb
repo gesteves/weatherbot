@@ -55,7 +55,7 @@ class ForecastPresenter < SimpleDelegator
 
   def wind_direction(bearing)
     # https://stackoverflow.com/a/7490772
-    value = ((bearing + 180)/22.5) + 0.5
+    value = (bearing/22.5) + 0.5
     directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
     directions[(value % 16)]
   end
