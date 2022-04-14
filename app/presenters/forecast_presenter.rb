@@ -265,7 +265,8 @@ class ForecastPresenter < SimpleDelegator
                   display: false
                 },
                 ticks: {
-                  maxTicksLimit: 28
+                  maxTicksLimit: 28,
+                  callback: "(val) => { return val + '%'; }"
                 }
               },
             ],
