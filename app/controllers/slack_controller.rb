@@ -48,6 +48,9 @@ class SlackController < ApplicationController
   end
 
   def interactions
+    if @actions.include? 'open_preferences'
+      open_preferences
+    end
     render plain: "OK", status: 200
   end
 
@@ -98,8 +101,6 @@ class SlackController < ApplicationController
     @ts = payload.dig(:message, :ts)
     @actions = payload.dig(:actions)&.map { |a| a[:action_id] }
     @trigger_id = payload.dig(:trigger_id)
-    logger.info "actions: #{@actions.to_s}"
-    logger.info "trigger id: #{@trigger_id}"
   end
 
   def parse_slash
@@ -129,6 +130,10 @@ class SlackController < ApplicationController
   end
 
   # INTERACTION HANDLERS
+
+  def open_preferences
+    OpenPreferencesWorker.perform_async(@team, @user, @trigger_id)
+  end
 
   # SLASH HANDLERS
 

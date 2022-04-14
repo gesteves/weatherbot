@@ -59,4 +59,8 @@ class User < ApplicationRecord
   def update_app_home
     team.update_app_home(user_id: slack_id, view: HomeViewPresenter.new(self).to_view)
   end
+
+  def open_preferences(trigger_id)
+    team.open_view(trigger_id: trigger_id, view: PreferencesPresenter.new(self).to_view)
+  end
 end

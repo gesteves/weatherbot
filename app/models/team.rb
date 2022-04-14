@@ -49,6 +49,15 @@ class Team < ApplicationRecord
     response
   end
 
+  def open_view(trigger_id:, view:)
+    return if has_invalid_token?
+    slack = Slack.new
+    response = slack.views_open(access_token: access_token, trigger_id: trigger_id, view: view)
+    return if response.blank?
+    raise response[:error] unless response[:ok]
+    response
+  end
+
   def has_invalid_token?
     slack = Slack.new
     response = slack.auth_test(access_token: access_token)

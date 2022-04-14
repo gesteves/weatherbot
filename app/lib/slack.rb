@@ -205,6 +205,23 @@ class Slack
     JSON.parse(response.body, symbolize_names: true)
   end
 
+  # Open a view for a user.
+  # @param access_token [String] Authentication token bearing required scopes.
+  # @param trigger_id [String] Exchange a trigger to post to the user.
+  # @param view [Hash] A view payload.
+  # @see https://api.slack.com/methods/views.open
+  # @return [String] A JSON response.
+  def views_open(access_token:, user_id:, view:)
+    params = {
+      trigger_id: trigger_id,
+      view: view
+    }.compact
+    response = HTTParty.post("https://slack.com/api/views.open",
+                            body: params.to_json,
+                            headers: { 'Authorization': "Bearer #{access_token}", 'Content-Type': 'application/json' })
+    JSON.parse(response.body, symbolize_names: true)
+  end
+
   # Sends a message to a response url.
   # @param access_token [String] Authentication token bearing required scopes.
   # @param channel_id [String] Channel, private group, or IM channel to send message to.
