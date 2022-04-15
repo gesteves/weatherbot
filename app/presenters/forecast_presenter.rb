@@ -418,6 +418,7 @@ class ForecastPresenter < SimpleDelegator
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
+            fill: false,
             pointRadius: 2,
             lineTension: 0.4,
             yAxisID: "yChance"
