@@ -15,7 +15,7 @@ class PostForecastWorker < ApplicationWorker
     formatted_address = geocoded.dig(:results, 0, :formatted_address)
 
     text = "Weather forecast for #{formatted_address}: https://darksky.net/#{lat},#{long}"
-    blocks = Rails.cache.fetch("/slash/forecast_blocks/#{lat}/#{long}", expires_in: 10.minutes) do
+    blocks = Rails.cache.fetch("/slash/forecast/#{lat}/#{long}", expires_in: 1.minute) do
       forecast = DarkSky.forecast(location: formatted_address, lat: lat, long: long)
       ForecastPresenter.new(forecast).short_forecast_blocks
     end
