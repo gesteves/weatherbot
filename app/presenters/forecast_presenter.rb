@@ -242,7 +242,7 @@ class ForecastPresenter < SimpleDelegator
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             borderColor: "rgb(54, 162, 235)",
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0,
@@ -315,7 +315,7 @@ class ForecastPresenter < SimpleDelegator
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             borderColor: "rgb(54, 162, 235)",
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0,
@@ -324,7 +324,7 @@ class ForecastPresenter < SimpleDelegator
           }, {
             label: "Temperature",
             borderColor: "rgb(255, 99, 132)",
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor: "rgba(255, 99, 132, 0.5)",
             data: #{data.map { |d| d[:apparentTemperature] }},
             pointRadius: 0,
@@ -414,17 +414,17 @@ class ForecastPresenter < SimpleDelegator
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             borderColor: "rgb(54, 162, 235)",
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
-            pointRadius: 0,
+            pointRadius: 2,
             lineTension: 0.4,
             yAxisID: "yChance"
           }, {
             type: "bar",
             label: "Temperature",
             borderColor: "rgb(255, 99, 132)",
-            borderWidth: 1,
+            borderWidth: 2,
             backgroundColor: "rgba(255, 99, 132, 0.5)",
             data: #{data.map { |d| [d[:apparentTemperatureMin], d[:apparentTemperatureMax]] }},
             yAxisID: "yTemp"
