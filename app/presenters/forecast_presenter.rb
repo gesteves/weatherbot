@@ -37,7 +37,7 @@ class ForecastPresenter < SimpleDelegator
     blocks << currently_block
     blocks << divider
     blocks << minutely_block
-    blocks << precipitation_line_chart(data: dig(:minutely, :data), time_format: '%l:%M', ticks: 28)
+    blocks << precipitation_line_chart(data: dig(:minutely, :data), time_format: '%l:%M %P', ticks: 28)
     blocks << divider
     blocks << hourly_block
     blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.slice(0, 24), time_format: '%l %P')
