@@ -294,7 +294,7 @@ class ForecastPresenter < SimpleDelegator
       }
     CONFIG
 
-    qc = QuickChart.new(chart_config, width: 600, height: 400, device_pixel_ratio: 2.0)
+    qc = QuickChart.new(chart_config, width: 1200, height: 800, device_pixel_ratio: 2.0)
 
     {
 			"type": "image",
