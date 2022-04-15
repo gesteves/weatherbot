@@ -1,9 +1,11 @@
 class HomeViewPresenter < SimpleDelegator
   def to_view
-    blocks = if location.blank?
-      onboarding_blocks
-    else
-      forecast_blocks
+    blocks = Rails.cache.fetch("/user/#{slack_id}/home/#{location}", expires_in: 10.minutes) do
+      if location.blank?
+        onboarding_blocks
+      else
+        forecast_blocks
+      end
     end
 
     {
@@ -48,26 +50,24 @@ class HomeViewPresenter < SimpleDelegator
   end
 
   def forecast_blocks
-    Rails.cache.fetch("/user/#{slack_id/}forecast_blocks/", expires_in: 10.minutes) do
-      blocks = ForecastPresenter.new(forecast).long_forecast_blocks
-      blocks << {
-        type: "divider"
-      }
-      blocks << {
-        type: "actions",
-        elements: [
-          {
-            type: "button",
-            text: {
-              type: "plain_text",
-              text: "Preferences",
-              "emoji": true
-            },
-            action_id: "open_preferences"
-          }
-        ]
-      }
-      blocks
-    end
+    blocks = ForecastPresenter.new(forecast).long_forecast_blocks
+    blocks << {
+      type: "divider"
+    }
+    blocks << {
+      type: "actions",
+      elements: [
+        {
+          type: "button",
+          text: {
+            type: "plain_text",
+            text: "Preferences",
+            "emoji": true
+          },
+          action_id: "open_preferences"
+        }
+      ]
+    }
+    blocks
   end
 end
