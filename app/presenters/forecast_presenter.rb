@@ -43,7 +43,7 @@ class ForecastPresenter < SimpleDelegator
     blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.slice(0, 24), time_format: '%l %P')
     blocks << divider
     blocks << daily_block
-    blocks << precipitation_line_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
+    blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
     blocks.flatten.compact
   end
 
@@ -326,6 +326,102 @@ class ForecastPresenter < SimpleDelegator
             data: #{data.map { |d| d[:apparentTemperature] }},
             pointRadius: 0,
             lineTension: 0.4,
+            yAxisID: "yTemp"
+          }]
+        },
+        options: {
+          title: {
+            display: false,
+          },
+          legend: {
+            display: true,
+            position: 'bottom',
+            align: 'start',
+            labels: {
+              boxWidth: 4
+            }
+          },
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: false
+                },
+                gridLines: {
+                  display: false
+                },
+                ticks: {
+                  maxTicksLimit: #{ticks}
+                }
+              },
+            ],
+            yAxes: [
+              {
+                id: "yChance",
+                display: true,
+                position: "left",
+                scaleLabel: {
+                  display: false
+                },
+                ticks: {
+                  beginAtZero: true,
+                  suggestedMin: 0,
+                  suggestedMax: 100,
+                  callback: (val) => { return val + "%"; }
+                }
+              },
+              {
+                id: "yTemp",
+                display: true,
+                position: "right",
+                scaleLabel: {
+                  display: false
+                },
+                gridLines: {
+                  drawOnChartArea: false
+                },
+                ticks: {
+                  callback: (val) => { return val + "°#{temp_unit}"; }
+                }
+              }
+            ],
+          },
+        }
+      }
+    CONFIG
+
+    qc = QuickChart.new(chart_config, width: 640, height: 480, device_pixel_ratio: 2.0)
+
+    {
+			"type": "image",
+			"image_url": qc.get_short_url,
+			"alt_text": "Chance of precipitation & temperature"
+		}
+  end
+
+  def precipitation_temperature_combo_chart(data:, time_format:, ticks: 24)
+    return if data.blank?
+
+    chart_config = <<~CONFIG
+      {
+        type: "line",
+        data: {
+          labels: #{data.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime(time_format) }},
+          datasets: [{
+            label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
+            borderColor: "rgba(54, 162, 235)",
+            backgroundColor: "rgba(54, 162, 235, 0.5)",
+            data: #{data.map { |d| d[:precipProbability] * 100 }},
+            pointRadius: 0,
+            lineTension: 0.4,
+            yAxisID: "yChance"
+          }, {
+            type: "bar",
+            label: "Temperature",
+            borderColor: "rgba(255, 99, 132)",
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
+            data: #{data.map { |d| [d[:apparentTemperatureMin], d[:apparentTemperatureMax]] }},
             yAxisID: "yTemp"
           }]
         },
