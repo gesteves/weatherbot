@@ -20,7 +20,6 @@ class ForecastPresenter < SimpleDelegator
     blocks << hourly_block
     blocks << daily_block
     blocks << divider
-    blocks << timestamp_block
     blocks.flatten.compact
   end
 
@@ -47,7 +46,6 @@ class ForecastPresenter < SimpleDelegator
     blocks << daily_block
     blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
     blocks << divider
-    blocks << timestamp_block
     blocks.flatten.compact
   end
 
