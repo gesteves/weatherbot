@@ -257,7 +257,7 @@ class ForecastPresenter < SimpleDelegator
             position: 'bottom',
             align: 'start',
             labels: {
-              boxWidth: 1
+              boxWidth: 2
             }
           },
           scales: {
@@ -338,7 +338,7 @@ class ForecastPresenter < SimpleDelegator
             position: 'bottom',
             align: 'start',
             labels: {
-              boxWidth: 1
+              boxWidth: 2
             }
           },
           scales: {
