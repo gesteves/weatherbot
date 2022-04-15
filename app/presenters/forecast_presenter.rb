@@ -237,7 +237,7 @@ class ForecastPresenter < SimpleDelegator
 
   def timestamp_block
     timestamp = dig(:currently, :time)
-    return unless timestamp.blank?
+    return if timestamp.blank?
     {
       type: "context",
       elements: [
