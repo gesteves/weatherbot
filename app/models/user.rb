@@ -57,7 +57,7 @@ class User < ApplicationRecord
   end
 
   def update_app_home
-    view = Rails.cache.fetch("/user/#{slack_id}/views/home/#{updated_at.to_i}", expires_in: 5.minutes) do
+    view = Rails.cache.fetch("/user/#{slack_id}/views/home/#{updated_at.to_i}", expires_in: 1.minute) do
       HomeViewPresenter.new(self).to_view
     end
     team.update_app_home(user_id: slack_id, view: view)
