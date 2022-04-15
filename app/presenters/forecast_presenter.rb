@@ -445,7 +445,7 @@ class ForecastPresenter < SimpleDelegator
           },
           plugins: {
             roundedBars: true
-          }
+          },
           scales: {
             xAxes: [
               {
