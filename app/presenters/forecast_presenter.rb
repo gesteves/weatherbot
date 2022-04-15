@@ -420,7 +420,7 @@ class ForecastPresenter < SimpleDelegator
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             fill: false,
             pointRadius: 2,
-            lineTension: 0.4,
+            lineTension: 0.2,
             yAxisID: "yChance"
           }, {
             label: "Temperature",
