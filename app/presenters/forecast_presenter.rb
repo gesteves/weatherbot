@@ -443,9 +443,6 @@ class ForecastPresenter < SimpleDelegator
               boxWidth: 4
             }
           },
-          plugins: {
-            roundedBars: true
-          },
           scales: {
             xAxes: [
               {
