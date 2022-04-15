@@ -19,6 +19,8 @@ class ForecastPresenter < SimpleDelegator
     blocks << minutely_block
     blocks << hourly_block
     blocks << daily_block
+    blocks << divider
+    blocks << timestamp_block
     blocks.flatten.compact
   end
 
@@ -44,6 +46,8 @@ class ForecastPresenter < SimpleDelegator
     blocks << divider
     blocks << daily_block
     blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
+    blocks << divider
+    blocks << timestamp_block
     blocks.flatten.compact
   end
 
@@ -229,6 +233,20 @@ class ForecastPresenter < SimpleDelegator
         ]
       }
     ]
+  end
+
+  def timestamp_block
+    timestamp = dig(:currently, :time)
+    return unless timestamp.blank?
+    {
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text: "Updated at <!date^#{timestamp}^{time}|#{Time.at(timestamp).strftime('%r')}>"
+        }
+      ]
+    }
   end
 
   def precipitation_line_chart(data:, time_format:, ticks: 24)
