@@ -242,7 +242,7 @@ class ForecastPresenter < SimpleDelegator
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             borderColor: "rgba(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5),
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0,
             lineTension: 0.4
@@ -314,7 +314,7 @@ class ForecastPresenter < SimpleDelegator
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
             borderColor: "rgba(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5),
+            backgroundColor: "rgba(255, 99, 132, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             pointRadius: 0,
             lineTension: 0.4,
@@ -322,7 +322,7 @@ class ForecastPresenter < SimpleDelegator
           }, {
             label: "Temperature",
             borderColor: "rgba(54, 162, 235)",
-            backgroundColor: "rgba(54, 162, 235, 0.5),
+            backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:apparentTemperature] }},
             pointRadius: 0,
             lineTension: 0.4,
