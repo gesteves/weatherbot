@@ -41,10 +41,10 @@ class ForecastPresenter < SimpleDelegator
     blocks << precipitation_line_chart(data: dig(:minutely, :data), time_format: '%l:%M %P', ticks: 28)
     blocks << divider
     blocks << hourly_block
-    blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.slice(0, 24), time_format: '%l %P')
+    blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.select { |d| d[:time] > now }&.slice(0, 24), time_format: '%l %P')
     blocks << divider
     blocks << daily_block
-    blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.slice(0, 7), time_format: '%A')
+    blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.select { |d| d[:time] > now }&.slice(0, 7), time_format: '%A')
     blocks << divider
     blocks.flatten.compact
   end
@@ -204,7 +204,7 @@ class ForecastPresenter < SimpleDelegator
     summary = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}"
 
     now = Time.now.to_i
-    data = daily.dig(:data)&.select { |d| d[:time] > now }
+    data = daily.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 7)
 
     max_temp = data&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
     min_temp = data&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
