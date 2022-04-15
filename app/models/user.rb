@@ -57,7 +57,10 @@ class User < ApplicationRecord
   end
 
   def update_app_home
-    team.update_app_home(user_id: slack_id, view: HomeViewPresenter.new(self).to_view)
+    view = Rails.cache.fetch("/user/#{slack_id}/views/home/#{updated_at.to_i}", expires_in: 10.minutes) do
+      HomeViewPresenter.new(self).to_view
+    end
+    team.update_app_home(user_id: slack_id, view: view)
   end
 
   def open_preferences(trigger_id)

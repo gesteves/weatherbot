@@ -1,11 +1,9 @@
 class HomeViewPresenter < SimpleDelegator
   def to_view
-    blocks = Rails.cache.fetch("/user/#{slack_id}/home/#{location}", expires_in: 10.minutes) do
-      if location.blank?
-        onboarding_blocks
-      else
-        forecast_blocks
-      end
+    blocks = if location.blank?
+      onboarding_blocks
+    else
+      forecast_blocks
     end
 
     {
