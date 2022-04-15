@@ -360,6 +360,7 @@ class ForecastPresenter < SimpleDelegator
               {
                 id: "yChance",
                 display: true,
+                position: "left",
                 scaleLabel: {
                   display: false
                 },
@@ -373,6 +374,7 @@ class ForecastPresenter < SimpleDelegator
               {
                 id: "yTemp",
                 display: true,
+                position: "right",
                 scaleLabel: {
                   display: false
                 },
