@@ -14,9 +14,11 @@ class PostForecastWorker < ApplicationWorker
     long = geocoded.dig(:results, 0, :geometry, :location, :lng)
     formatted_address = geocoded.dig(:results, 0, :formatted_address)
 
-    forecast = DarkSky.forecast(location: formatted_address, lat: lat, long: long)
-    blocks = ForecastPresenter.new(forecast).short_forecast_blocks
-    text = "Weather forecast for #{forecast[:formatted_address]}: https://darksky.net/#{forecast[:lat]},#{forecast[:long]}"
+    text = "Weather forecast for #{formatted_address}: https://darksky.net/#{lat},#{long}"
+    blocks = Rails.cache.fetch("/slash/forecast_blocks/#{lat}/#{long}", expires_in: 10.minutes) do
+      forecast = DarkSky.forecast(location: formatted_address, lat: lat, long: long)
+      ForecastPresenter.new(forecast).short_forecast_blocks
+    end
     Slack.post_to_webhook(response_url: response_url, text: text, blocks: blocks, response_type: "in_channel")
   end
 end

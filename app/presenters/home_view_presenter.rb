@@ -48,24 +48,26 @@ class HomeViewPresenter < SimpleDelegator
   end
 
   def forecast_blocks
-    blocks = ForecastPresenter.new(forecast).long_forecast_blocks
-    blocks << {
-			type: "divider"
-		}
-    blocks << {
-      type: "actions",
-      elements: [
-        {
-          type: "button",
-          text: {
-            type: "plain_text",
-            text: "Preferences",
-            "emoji": true
-          },
-          action_id: "open_preferences"
-        }
-      ]
-    }
-    blocks
+    Rails.cache.fetch("/user/#{slack_id/}forecast_blocks/", expires_in: 10.minutes) do
+      blocks = ForecastPresenter.new(forecast).long_forecast_blocks
+      blocks << {
+        type: "divider"
+      }
+      blocks << {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: "Preferences",
+              "emoji": true
+            },
+            action_id: "open_preferences"
+          }
+        ]
+      }
+      blocks
+    end
   end
 end
