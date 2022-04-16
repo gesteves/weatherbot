@@ -287,12 +287,20 @@ class ForecastPresenter < SimpleDelegator
   def timestamp_block
     timestamp = dig(:currently, :time)
     return if timestamp.blank?
+    updated = Time.at(timestamp).in_time_zone(dig(:timezone))
+
+    text = if Time.now.in_time_zone(dig(:timezone)).beginning_of_day > updated
+      "Updated <!date^#{timestamp}^{date_short_pretty}|#{updated.strftime('%D')}>"
+    else
+      "Updated at <!date^#{timestamp}^{time}|#{updated.strftime('%r')}>"
+    end
+
     {
       type: "context",
       elements: [
         {
           type: "mrkdwn",
-          text: "Updated at <!date^#{timestamp}^{time}|#{Time.at(timestamp).strftime('%r')}>"
+          text: text
         }
       ]
     }
