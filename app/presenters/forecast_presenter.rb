@@ -16,6 +16,7 @@ class ForecastPresenter < SimpleDelegator
   def long_forecast_blocks
     blocks = []
     blocks << header_block
+    blocks << timestamp_block
     blocks << divider
     blocks << alerts_block
     blocks << currently_block
