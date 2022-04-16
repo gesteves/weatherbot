@@ -156,8 +156,8 @@ class ForecastPresenter < SimpleDelegator
     context << "*#{currently.dig(:temperature).round}°#{temp_unit}*"
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
     context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
-    context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
-    context << "UV index *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
+    context << "Dew *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
+    context << "UV *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
     context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_direction(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
     context << "Gusts *#{wind_speed(currently.dig(:windGust))}*" if currently.dig(:windGust).present?
 
@@ -194,8 +194,8 @@ class ForecastPresenter < SimpleDelegator
     context << "*#{data.dig(:temperature).round}°#{temp_unit}*"
     context << "Feels like *#{data.dig(:apparentTemperature).round}°#{temp_unit}*" if data.dig(:temperature).round != data.dig(:apparentTemperature).round
     context << "Humidity *#{number_to_percentage(data.dig(:humidity) * 100, precision: 0)}*" if data.dig(:humidity).present?
-    context << "Dew point *#{data.dig(:dewPoint).round}°#{temp_unit}*" if data.dig(:dewPoint).present?
-    context << "UV index *#{data.dig(:uvIndex)}*" if data.dig(:uvIndex).present?
+    context << "Dew *#{data.dig(:dewPoint).round}°#{temp_unit}*" if data.dig(:dewPoint).present?
+    context << "UV *#{data.dig(:uvIndex)}*" if data.dig(:uvIndex).present?
     context << "Wind *#{wind_speed(data.dig(:windSpeed))} #{wind_direction(data.dig(:windBearing))}*" if data.dig(:windSpeed).present? && data.dig(:windBearing).present?
     context << "Gusts *#{wind_speed(data.dig(:windGust))}*" if data.dig(:windGust).present?
 
