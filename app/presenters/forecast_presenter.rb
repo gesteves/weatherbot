@@ -113,7 +113,11 @@ class ForecastPresenter < SimpleDelegator
   end
 
   def alerts_block
-    dig(:alerts)&.map { |alert| alert_block(alert) }&.flatten
+    alerts = dig(:alerts)
+    return if alerts.blank?
+    blocks = alerts.map { |alert| alert_block(alert) }.flatten
+    blocks << divider
+    blocks
   end
 
   def alert_block(alert)
@@ -139,7 +143,6 @@ class ForecastPresenter < SimpleDelegator
       }
     end
 
-    blocks << divider
     blocks
   end
 
