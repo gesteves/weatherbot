@@ -2,7 +2,7 @@
 
 A weather bot for Slack, powered by the [Dark Sky](https://darksky.net/poweredby/) API. Get up-to-the-minute weather forecasts in any channel.
 
-<img width="571" alt="screenshot" src="https://user-images.githubusercontent.com/6379/163677737-18b0eaa1-ba8a-4d40-b702-a8602dfff916.png">
+<img width="665" alt="screenshot" src="https://user-images.githubusercontent.com/6379/163686084-ff41949b-3a97-4028-921e-a30d1a0ddb66.png">
 
 ## Installation
 
