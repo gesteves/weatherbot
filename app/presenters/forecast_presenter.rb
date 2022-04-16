@@ -254,7 +254,7 @@ class ForecastPresenter < SimpleDelegator
     summary = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}"
 
     current_day = Time.now.in_time_zone(dig(:timezone)).beginning_of_day.to_i
-    data = daily.dig(:data)&.select { |d| d[:time] >= current_day }&.slice(0, 7)
+    data = daily.dig(:data)&.select { |d| d[:time] > current_day }&.slice(0, 7)
 
     max_temp = data&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
     min_temp = data&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
