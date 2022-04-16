@@ -120,10 +120,16 @@ class ForecastPresenter < SimpleDelegator
         type: "section",
         text: {
           type: "mrkdwn",
-          text: dig(:alerts).map { |alert| ":warning: <#{alert[:uri]}|#{alert[:title]}>" }.join("\n")
+          text: dig(:alerts).map { |alert| alert_text(alert) }.join("\n")
         }
 		  }
     ]
+  end
+
+  def alert_text(alert)
+    text = ":warning: <#{alert[:uri]}|#{alert[:title]}>"
+    text += " (#{alert[:regions].join(', ')})" if alert[:regions].present?
+    text
   end
 
   def currently_block
