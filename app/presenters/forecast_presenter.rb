@@ -113,9 +113,7 @@ class ForecastPresenter < SimpleDelegator
   end
 
   def alerts_block
-    return if dig(:alerts).nil?
-
-    dig(:alerts).map { |alert| alert_block(alert) }.flatten
+    dig(:alerts)&.map { |alert| alert_block(alert) }&.flatten
   end
 
   def alert_block(alert)
