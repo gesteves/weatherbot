@@ -115,21 +115,33 @@ class ForecastPresenter < SimpleDelegator
   def alerts_block
     return if dig(:alerts).nil?
 
-    [
+    dig(:alerts).map { |alert| alert_block(alert) }.flatten
+  end
+
+  def alert_block(alert)
+    blocks = [
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: dig(:alerts).map { |alert| alert_text(alert) }.join("\n")
+          text: ":warning: <#{alert[:uri]}|#{alert[:title]}>"
         }
-		  }
+      }
     ]
-  end
 
-  def alert_text(alert)
-    text = ":warning: <#{alert[:uri]}|#{alert[:title]}>"
-    text += " (#{alert[:regions].join(', ')})" if alert[:regions].present?
-    text
+    if alert[:regions].present?
+      blocks << {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: alert[:regions].join(', ')
+          }
+        ]
+      }
+    end
+
+   blocks
   end
 
   def currently_block
