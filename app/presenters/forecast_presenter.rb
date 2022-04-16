@@ -139,7 +139,8 @@ class ForecastPresenter < SimpleDelegator
       }
     end
 
-   blocks
+    blocks << divider
+    blocks
   end
 
   def currently_block
