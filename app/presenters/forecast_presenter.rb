@@ -202,8 +202,10 @@ class ForecastPresenter < SimpleDelegator
 
     summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}"
 
+    current_hour = Time.now.beginning_of_hour.to_i
     now = Time.now.to_i
-    data = hourly.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 24)
+
+    data = hourly.dig(:data)&.select { |d| d[:time] >= current_hour }&.slice(0, 24)
     max_temp = data&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
     min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
 
@@ -249,8 +251,8 @@ class ForecastPresenter < SimpleDelegator
 
     summary = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}"
 
-    now = Time.now.to_i
-    data = daily.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 7)
+    current_day = Time.now.in_time_zone(dig(:timezone)).beginning_of_day.to_i
+    data = daily.dig(:data)&.select { |d| d[:time] >= current_day }&.slice(0, 7)
 
     max_temp = data&.max { |a,b| a[:apparentTemperatureMax] <=> b[:apparentTemperatureMax] }
     min_temp = data&.min { |a,b| a[:apparentTemperatureMin] <=> b[:apparentTemperatureMin] }
