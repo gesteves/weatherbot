@@ -165,7 +165,8 @@ class ForecastPresenter < SimpleDelegator
 
     summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
 
-    data = dig(:hourly, :data, 0)
+    current_hour = Time.now.beginning_of_hour.to_i
+    data = dig(:hourly, :data)&.find { |d| d[:time] >= current_hour }
 
     context = []
     context << "Feels like *#{data.dig(:apparentTemperature).round}°#{temp_unit}*" if data.dig(:temperature).round != data.dig(:apparentTemperature).round
