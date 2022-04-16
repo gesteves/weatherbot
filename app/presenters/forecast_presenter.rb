@@ -26,6 +26,7 @@ class ForecastPresenter < SimpleDelegator
     blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.select { |d| d[:time] > Time.now.to_i }&.slice(0, 24), time_format: '%l %P')
     blocks << daily_block
     blocks << precipitation_temperature_bar_chart(data: dig(:daily, :data)&.select { |d| d[:time] > Time.now.to_i }&.slice(0, 7), time_format: '%A')
+    blocks << divider
     blocks.flatten.compact
   end
 
