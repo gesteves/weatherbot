@@ -451,20 +451,16 @@ class ForecastPresenter < SimpleDelegator
           labels: #{data.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime(time_format) }},
           datasets: [{
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
-            barPercentage: 1,
             borderColor: "rgb(54, 162, 235)",
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
-            categoryPercentage: 1,
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             yAxisID: "yChance"
           }, {
             label: "Temperature",
-            barPercentage: 1,
             borderColor: "rgb(255, 99, 132)",
             borderWidth: 2,
             backgroundColor: "rgba(255, 99, 132, 0.5)",
-            categoryPercentage: 1,
             data: #{data.map { |d| [d[:apparentTemperatureMin], d[:apparentTemperatureMax]] }},
             yAxisID: "yTemp"
           }]
