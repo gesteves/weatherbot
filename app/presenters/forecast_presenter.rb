@@ -172,7 +172,7 @@ class ForecastPresenter < SimpleDelegator
     context << "Humidity *#{number_to_percentage(data.dig(:humidity) * 100, precision: 0)}*" if data.dig(:humidity).present?
     context << "Dew point *#{data.dig(:dewPoint).round}°#{temp_unit}*" if data.dig(:dewPoint).present?
     context << "UV index *#{data.dig(:uvIndex)}*" if data.dig(:uvIndex).present?
-    context << "Wind *#{wind_speed(data.dig(:windSpeed))} #{wind_direction(data.dig(:windBearing))}*" if data.dig(:windSpeed).present? && currently.dig(:data).present?
+    context << "Wind *#{wind_speed(data.dig(:windSpeed))} #{wind_direction(data.dig(:windBearing))}*" if data.dig(:windSpeed).present? && data.dig(:data).present?
     context << "Gusts *#{wind_speed(data.dig(:windGust))}*" if data.dig(:windGust).present?
 
     [
