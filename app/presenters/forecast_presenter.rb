@@ -51,33 +51,48 @@ class ForecastPresenter < SimpleDelegator
 
   private
 
-  def icon_accessory(icon)
-    available = %w{
-      clear-day
-      clear-night
-      rain
-      snow
-      sleet
-      wind
-      fog
-      cloudy
-      partly-cloudy-day
-      partly-cloudy-night
-      hail
-      thunderstorm
-      tornado
-    }
-    return unless available.include? icon
-
-    {
-      type: "image",
-      image_url: ActionController::Base.helpers.image_url("icons/#{icon}.png"),
-      alt_text: icon.titleize
-    }
-  end
-
   def divider
     {	type: "divider" }
+  end
+
+  def icon_to_emoji(icon)
+    mapping = {
+      'clear-day': ':sunny:',
+      'clear-night': moon_phase_emoji,
+      'rain': ':rain_cloud:',
+      'snow': ':snowflake:',
+      'sleet': ':snow_cloud:',
+      'wind': ':dash:',
+      'fog': ':fog:',
+      'cloudy': ':cloud:',
+      'partly-cloudy-day': ':partly_sunny:',
+      'partly-cloudy-night': ':cloud:',
+      'thunderstorm': ':thunder_cloud_and_rain:',
+      'tornado': ':tornado:'
+    }.with_indifferent_access
+    mapping[icon] || ''
+  end
+
+  def moon_phase_emoji
+    moon = dig(:daily, :data, 0, :moonPhase)
+    return ":moon:" if moon.blank?
+    if moon == 0
+      ":new_moon:"
+    elsif moon > 0 && moon < 0.25
+      ":waxing_crescent_moon:"
+    elsif moon == 0.25
+      ":first_quarter_moon:"
+    elsif moon > 0.25 && moon < 0.5
+      ":waxing_gibbous_moon:"
+    elsif moon == 0.5
+      ":full_moon:"
+    elsif moon > 0.5 && moon < 0.75
+      ":waning_gibbous_moon:"
+    elsif moon == 0.75
+      ":last_quarter_moon:"
+    elsif moon > 0.75
+      ":waning_crescent_moon:"
+    end
   end
 
   def temp_unit
@@ -121,7 +136,7 @@ class ForecastPresenter < SimpleDelegator
     currently = dig(:currently)
     return if currently.blank?
 
-    summary = "#{currently.dig(:summary).sub(/\.$/, '')}, #{currently.dig(:temperature).round}°#{temp_unit}"
+    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary).sub(/\.$/, '')}, #{currently.dig(:temperature).round}°#{temp_unit}"
 
     context = []
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
@@ -137,9 +152,8 @@ class ForecastPresenter < SimpleDelegator
         text: {
           type: "mrkdwn",
           text: "*Right now*\n#{summary.strip}"
-        },
-        accessory: icon_accessory(currently.dig(:icon))
-      }.compact,
+        }
+      },
       {
         type: "context",
         elements: [
@@ -156,7 +170,7 @@ class ForecastPresenter < SimpleDelegator
     minutely = dig(:minutely)
     return if minutely.blank?
 
-    summary = minutely.dig(:summary)
+    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
 
     [
       {
@@ -164,9 +178,8 @@ class ForecastPresenter < SimpleDelegator
         text: {
           type: "mrkdwn",
           text: "*Next hour*\n#{summary.strip}"
-        },
-        accessory: icon_accessory(minutely.dig(:icon))
-      }.compact
+        }
+      }
     ]
   end
 
@@ -174,7 +187,7 @@ class ForecastPresenter < SimpleDelegator
     hourly = dig(:hourly)
     return if hourly.blank?
 
-    summary = hourly.dig(:summary)
+    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}"
 
     now = Time.now.to_i
     data = hourly.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 24)
@@ -192,9 +205,8 @@ class ForecastPresenter < SimpleDelegator
         text: {
           type: "mrkdwn",
           text: "*Next 24 hours*\n#{summary.strip}"
-        },
-        accessory: icon_accessory(hourly.dig(:icon))
-      }.compact,
+        }
+      },
       {
         type: "context",
         elements: [
@@ -211,7 +223,7 @@ class ForecastPresenter < SimpleDelegator
     daily = dig(:daily)
     return if daily.blank?
 
-    summary = daily.dig(:summary)
+    summary = "#{icon_to_emoji(daily.dig(:icon))} #{daily.dig(:summary)}"
 
     now = Time.now.to_i
     data = daily.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 7)
@@ -229,9 +241,8 @@ class ForecastPresenter < SimpleDelegator
         text: {
           type: "mrkdwn",
           text: "*Next 7 days*\n#{summary.strip}"
-        },
-        accessory: icon_accessory(daily.dig(:icon))
-      }.compact,
+        }
+      },
       {
         type: "context",
         elements: [
