@@ -165,6 +165,16 @@ class ForecastPresenter < SimpleDelegator
 
     summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
 
+    data = dig(:hourly, :data, 0)
+
+    context = []
+    context << "Feels like *#{data.dig(:apparentTemperature).round}°#{temp_unit}*" if data.dig(:temperature).round != data.dig(:apparentTemperature).round
+    context << "Humidity *#{number_to_percentage(data.dig(:humidity) * 100, precision: 0)}*" if data.dig(:humidity).present?
+    context << "Dew point *#{data.dig(:dewPoint).round}°#{temp_unit}*" if data.dig(:dewPoint).present?
+    context << "UV index *#{data.dig(:uvIndex)}*" if data.dig(:uvIndex).present?
+    context << "Wind *#{wind_speed(data.dig(:windSpeed))} #{wind_direction(data.dig(:windBearing))}*" if data.dig(:windSpeed).present? && currently.dig(:data).present?
+    context << "Gusts *#{wind_speed(data.dig(:windGust))}*" if data.dig(:windGust).present?
+
     [
       {
         type: "section",
@@ -172,6 +182,15 @@ class ForecastPresenter < SimpleDelegator
           type: "mrkdwn",
           text: "*Next hour*\n#{summary.strip}"
         }
+      },
+      {
+        type: "context",
+        elements: [
+          {
+            type: "mrkdwn",
+            text: context.join(" | ")
+          }
+        ]
       }
     ]
   end
