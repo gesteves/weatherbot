@@ -320,6 +320,7 @@ class ForecastPresenter < SimpleDelegator
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
+            fill: "start",
             pointRadius: 0,
             lineTension: 0.4
           }]
@@ -393,6 +394,7 @@ class ForecastPresenter < SimpleDelegator
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
+            fill: "start",
             pointRadius: 0,
             lineTension: 0.4,
             yAxisID: "yChance"
@@ -402,6 +404,7 @@ class ForecastPresenter < SimpleDelegator
             borderWidth: 2,
             backgroundColor: "rgba(255, 99, 132, 0.5)",
             data: #{data.map { |d| d[:apparentTemperature] }},
+            fill: "start",
             pointRadius: 0,
             lineTension: 0.4,
             yAxisID: "yTemp"
