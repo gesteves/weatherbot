@@ -67,7 +67,7 @@ class ForecastPresenter < SimpleDelegator
       'cloudy': ':cloud:',
       'partly-cloudy-day': ':partly_sunny:',
       'partly-cloudy-night': ':cloud:',
-      'thunderstorm': ':lightning:',
+      'thunderstorm': ':thunder_cloud_and_rain:',
       'tornado': ':tornado:'
     }.with_indifferent_access
     mapping[icon] || ''
