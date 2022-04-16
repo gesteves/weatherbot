@@ -202,16 +202,11 @@ class ForecastPresenter < SimpleDelegator
     ]
   end
 
-  def hourly_block
-    hourly = dig(:hourly)
-    return if hourly.blank?
+  def hourly_context_block(data)
+    return if data.blank?
 
-    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}"
-
-    current_hour = Time.now.beginning_of_hour.to_i
     now = Time.now.to_i
 
-    data = hourly.dig(:data)&.select { |d| d[:time] >= current_hour }&.slice(0, 24)
     max_temp = data&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
     min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
 
@@ -231,6 +226,23 @@ class ForecastPresenter < SimpleDelegator
       context.flatten!
     end
 
+    {
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text: context.join(' | ')
+        }
+      ]
+    }
+  end
+
+  def hourly_block
+    hourly = dig(:hourly)
+    return if hourly.blank?
+
+    summary = "#{icon_to_emoji(hourly.dig(:icon))} #{hourly.dig(:summary)}"
+
     [
       {
         type: "section",
@@ -239,15 +251,7 @@ class ForecastPresenter < SimpleDelegator
           text: "*Next 24 hours*\n#{summary.strip}"
         }
       },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: context.join(' | ')
-          }
-        ]
-      }
+      hourly_context_block(hourly.dig(:data)&.select { |d| d[:time] >= Time.now.beginning_of_hour.to_i }&.slice(0, 24))
     ]
   end
 
