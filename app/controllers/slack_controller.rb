@@ -61,7 +61,7 @@ class SlackController < ApplicationController
 
   def slash
     case @command
-    when "/weather"
+    when "/weather", "/weatherbot"
       slash_weather
     end
     response = { response_type: "in_channel" }
