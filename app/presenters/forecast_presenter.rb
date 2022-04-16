@@ -143,49 +143,8 @@ class ForecastPresenter < SimpleDelegator
     blocks
   end
 
-  def currently_block
-    currently = dig(:currently)
-    return if currently.blank?
-
-    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary).sub(/\.$/, '')}."
-
-    context = []
-    context << "*#{currently.dig(:temperature).round}°#{temp_unit}*"
-    context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
-    context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
-    context << "Dew *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
-    context << "UV *#{currently.dig(:uvIndex)}*" if currently.dig(:uvIndex).present?
-    context << "Wind *#{wind_speed(currently.dig(:windSpeed))} #{wind_direction(currently.dig(:windBearing))}*" if currently.dig(:windSpeed).present? && currently.dig(:windBearing).present?
-    context << "Gusts *#{wind_speed(currently.dig(:windGust))}*" if currently.dig(:windGust).present?
-
-    [
-      {
-        type: "section",
-        text: {
-          type: "mrkdwn",
-          text: "*Right now*\n#{summary.strip}"
-        }
-      },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: context.join(" | ")
-          }
-        ]
-      }
-    ]
-  end
-
-  def minutely_block
-    minutely = dig(:minutely)
-    return if minutely.blank?
-
-    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
-
-    current_hour = Time.now.beginning_of_hour.to_i
-    data = dig(:hourly, :data)&.find { |d| d[:time] >= current_hour }
+  def context_block(data)
+    return if data.blank?
 
     context = []
     context << "*#{data.dig(:temperature).round}°#{temp_unit}*"
@@ -196,6 +155,41 @@ class ForecastPresenter < SimpleDelegator
     context << "Wind *#{wind_speed(data.dig(:windSpeed))} #{wind_direction(data.dig(:windBearing))}*" if data.dig(:windSpeed).present? && data.dig(:windBearing).present?
     context << "Gusts *#{wind_speed(data.dig(:windGust))}*" if data.dig(:windGust).present?
 
+    {
+      type: "context",
+      elements: [
+        {
+          type: "mrkdwn",
+          text: context.join(" | ")
+        }
+      ]
+    }
+  end
+
+  def currently_block
+    currently = dig(:currently)
+    return if currently.blank?
+
+    summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary).sub(/\.$/, '')}."
+
+    [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "*Right now*\n#{summary.strip}"
+        }
+      },
+      context_block(currently)
+    ]
+  end
+
+  def minutely_block
+    minutely = dig(:minutely)
+    return if minutely.blank?
+
+    summary = "#{icon_to_emoji(minutely.dig(:icon))} #{minutely.dig(:summary)}"
+
     [
       {
         type: "section",
@@ -204,15 +198,7 @@ class ForecastPresenter < SimpleDelegator
           text: "*Next hour*\n#{summary.strip}"
         }
       },
-      {
-        type: "context",
-        elements: [
-          {
-            type: "mrkdwn",
-            text: context.join(" | ")
-          }
-        ]
-      }
+      context_block(dig(:hourly, :data)&.find { |d| d[:time] >= Time.now.beginning_of_hour.to_i })
     ]
   end
 
