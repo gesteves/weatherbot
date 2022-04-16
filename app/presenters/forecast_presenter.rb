@@ -2,18 +2,8 @@ class ForecastPresenter < SimpleDelegator
   include ActionView::Helpers::NumberHelper
   def short_forecast_blocks
     blocks = []
-    blocks << {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:location)}>*"
-			}
-		}
-
-    blocks << {
-			type: "divider"
-		}
-
+    blocks << header_block
+    blocks << divider
     blocks << alerts_block
     blocks << currently_block
     blocks << minutely_block
@@ -25,14 +15,7 @@ class ForecastPresenter < SimpleDelegator
 
   def long_forecast_blocks
     blocks = []
-    blocks << {
-			type: "section",
-			text: {
-				type: "mrkdwn",
-				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:location)}>*"
-			}
-		}
-
+    blocks << header_block
     blocks << divider
     blocks << alerts_block
     blocks << currently_block
@@ -44,7 +27,7 @@ class ForecastPresenter < SimpleDelegator
     blocks << precipitation_temperature_line_chart(data: dig(:hourly, :data)&.select { |d| d[:time] > Time.now.to_i }&.slice(0, 24), time_format: '%l %P')
     blocks << divider
     blocks << daily_block
-    blocks << precipitation_temperature_combo_chart(data: dig(:daily, :data)&.select { |d| d[:time] > Time.now.to_i }&.slice(0, 7), time_format: '%A')
+    blocks << precipitation_temperature_bar_chart(data: dig(:daily, :data)&.select { |d| d[:time] > Time.now.to_i }&.slice(0, 7), time_format: '%A')
     blocks << divider
     blocks.flatten.compact
   end
@@ -116,6 +99,16 @@ class ForecastPresenter < SimpleDelegator
     value = (bearing/22.5) + 0.5
     directions = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
     directions[(value % 16)]
+  end
+
+  def header_block
+    {
+			type: "section",
+			text: {
+				type: "mrkdwn",
+				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:location)}>*"
+			}
+		}
   end
 
   def alerts_block
@@ -441,7 +434,7 @@ class ForecastPresenter < SimpleDelegator
 		}
   end
 
-  def precipitation_temperature_combo_chart(data:, time_format:, ticks: 24)
+  def precipitation_temperature_bar_chart(data:, time_format:, ticks: 24)
     return if data.blank?
 
     chart_config = <<~CONFIG
