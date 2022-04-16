@@ -184,13 +184,24 @@ class ForecastPresenter < SimpleDelegator
 
     now = Time.now.to_i
     data = hourly.dig(:data)&.select { |d| d[:time] > now }&.slice(0, 24)
-
     max_temp = data&.max { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
     min_temp = data&.min { |a,b| a[:apparentTemperature] <=> b[:apparentTemperature] }
+
+    sunrise = dig(:daily, :data)&.find { |d| d[:sunriseTime] > now }&.dig(:sunriseTime)
+    sunset = dig(:daily, :data)&.find { |d| d[:sunsetTime] > now }&.dig(:sunsetTime)
 
     context = []
     context << "Low *#{min_temp[:apparentTemperature].round}°#{temp_unit}*"
     context << "High *#{max_temp[:apparentTemperature].round}°#{temp_unit}*"
+
+    if sunrise.present? && sunset.present?
+      sun_context = []
+      sun_context << "Sunrise at *#{Time.at(sunrise).in_time_zone(dig(:timezone)).strftime('%l:%M %p')}*"
+      sun_context << "Sunset at *#{Time.at(sunset).in_time_zone(dig(:timezone)).strftime('%l:%M %p')}*"
+      sun_context.reverse! if sunrise > sunset
+      context << sun_context
+      context.flatten!
+    end
 
     [
       {
