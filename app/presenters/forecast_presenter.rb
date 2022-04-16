@@ -58,7 +58,7 @@ class ForecastPresenter < SimpleDelegator
   def icon_to_emoji(icon)
     mapping = {
       'clear-day': ':sunny:',
-      'clear-night': ':moon:',
+      'clear-night': moon_phase_emoji,
       'rain': ':rain_cloud:',
       'snow': ':snowflake:',
       'sleet': ':snow_cloud:',
@@ -71,6 +71,28 @@ class ForecastPresenter < SimpleDelegator
       'tornado': ':tornado:'
     }.with_indifferent_access
     mapping[icon] || ''
+  end
+
+  def moon_phase_emoji
+    moon = dig(:daily, :data, 0, :moonPhase)
+    return ":moon:" if moon.blank?
+    if moon == 0
+      ":new_moon:"
+    elsif moon > 0 && moon < 0.25
+      ":waxing_crescent_moon:"
+    elsif moon == 0.25
+      ":first_quarter_moon:"
+    elsif moon > 0.25 && moon < 0.5
+      ":waxing_gibbous_moon:"
+    elsif moon == 0.5
+      ":full_moon:"
+    elsif moon > 0.5 && moon < 0.75
+      ":waning_gibbous_moon:"
+    elsif moon == 0.75
+      ":last_quarter_moon:"
+    elsif moon > 0.75
+      ":waning_crescent_moon:"
+    end
   end
 
   def temp_unit
