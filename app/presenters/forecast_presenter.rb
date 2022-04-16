@@ -454,6 +454,7 @@ class ForecastPresenter < SimpleDelegator
             borderColor: "rgb(54, 162, 235)",
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
+            categoryPercentage: 0.5,
             data: #{data.map { |d| d[:precipProbability] * 100 }},
             yAxisID: "yChance"
           }, {
@@ -461,6 +462,7 @@ class ForecastPresenter < SimpleDelegator
             borderColor: "rgb(255, 99, 132)",
             borderWidth: 2,
             backgroundColor: "rgba(255, 99, 132, 0.5)",
+            categoryPercentage: 0.5,
             data: #{data.map { |d| [d[:apparentTemperatureMin], d[:apparentTemperatureMax]] }},
             yAxisID: "yTemp"
           }]
