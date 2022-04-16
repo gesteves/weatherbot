@@ -132,7 +132,7 @@ class ForecastPresenter < SimpleDelegator
     summary = "#{icon_to_emoji(currently.dig(:icon))} #{currently.dig(:summary).sub(/\.$/, '')}."
 
     context = []
-    context << "Temperature *#{currently.dig(:temperature).round}°#{temp_unit}*"
+    context << "*#{currently.dig(:temperature).round}°#{temp_unit}*"
     context << "Feels like *#{currently.dig(:apparentTemperature).round}°#{temp_unit}*" if currently.dig(:temperature).round != currently.dig(:apparentTemperature).round
     context << "Humidity *#{number_to_percentage(currently.dig(:humidity) * 100, precision: 0)}*" if currently.dig(:humidity).present?
     context << "Dew point *#{currently.dig(:dewPoint).round}°#{temp_unit}*" if currently.dig(:dewPoint).present?
@@ -170,7 +170,7 @@ class ForecastPresenter < SimpleDelegator
     data = dig(:hourly, :data)&.find { |d| d[:time] >= current_hour }
 
     context = []
-    context << "Temperature *#{data.dig(:temperature).round}°#{temp_unit}*"
+    context << "*#{data.dig(:temperature).round}°#{temp_unit}*"
     context << "Feels like *#{data.dig(:apparentTemperature).round}°#{temp_unit}*" if data.dig(:temperature).round != data.dig(:apparentTemperature).round
     context << "Humidity *#{number_to_percentage(data.dig(:humidity) * 100, precision: 0)}*" if data.dig(:humidity).present?
     context << "Dew point *#{data.dig(:dewPoint).round}°#{temp_unit}*" if data.dig(:dewPoint).present?
