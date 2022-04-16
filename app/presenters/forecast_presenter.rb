@@ -450,15 +450,12 @@ class ForecastPresenter < SimpleDelegator
         data: {
           labels: #{data.map { |d| Time.at(d[:time]).in_time_zone(dig(:timezone)).strftime(time_format) }},
           datasets: [{
-            type: "line",
             label: "Chance of #{data.map { |d| d[:precipType] }&.compact&.uniq&.join('/') || 'precipitation'}",
+            barPercentage: 0.5,
             borderColor: "rgb(54, 162, 235)",
             borderWidth: 2,
             backgroundColor: "rgba(54, 162, 235, 0.5)",
             data: #{data.map { |d| d[:precipProbability] * 100 }},
-            fill: false,
-            pointRadius: 0,
-            lineTension: 0.4,
             yAxisID: "yChance"
           }, {
             label: "Temperature",
