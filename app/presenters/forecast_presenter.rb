@@ -219,8 +219,8 @@ class ForecastPresenter < SimpleDelegator
 
     if sunrise.present? && sunset.present?
       sun_context = []
-      sun_context << "Sunrise at *#{Time.at(sunrise).in_time_zone(dig(:timezone)).strftime('%l:%M %p')}*"
-      sun_context << "Sunset at *#{Time.at(sunset).in_time_zone(dig(:timezone)).strftime('%l:%M %p')}*"
+      sun_context << "Sunrise at *#{Time.at(sunrise).in_time_zone(dig(:timezone)).strftime('%l:%M %p').strip}*"
+      sun_context << "Sunset at *#{Time.at(sunset).in_time_zone(dig(:timezone)).strftime('%l:%M %p').strip}*"
       sun_context.reverse! if sunrise > sunset
       context << sun_context
       context.flatten!
