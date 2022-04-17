@@ -44,7 +44,7 @@ class SlackController < ApplicationController
       app_uninstalled
     end
 
-    render plain: "OK", status: 200
+    render plain: "", status: 200
   end
 
   def interactions
