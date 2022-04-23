@@ -7,6 +7,7 @@ class SlackController < ApplicationController
   before_action :check_token, only: [:events, :interactions, :slash]
   before_action :check_team, only: :slash
   before_action :verify_url, only: :events
+  alias_method :refresh_app_home, :app_home_opened
 
   def auth
     url = root_url
@@ -52,6 +53,7 @@ class SlackController < ApplicationController
     when 'block_actions'
       actions = @payload.dig(:actions)&.map { |a| a[:action_id] }
       open_preferences if actions&.include? 'open_preferences'
+      refresh_app_home if actions&.include? 'refresh_app_home'
     when 'view_submission'
       @values = @payload.dig(:view, :state, :values)
       save_preferences if @payload.dig(:view, :callback_id) == 'preferences_modal'
