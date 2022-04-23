@@ -17,7 +17,6 @@ class ForecastPresenter < SimpleDelegator
     blocks = []
     blocks << header_block
     blocks << timestamp_block
-    blocks << refresh_button_block
     blocks << divider
     blocks << alerts_block
     blocks << currently_block
@@ -107,23 +106,6 @@ class ForecastPresenter < SimpleDelegator
 				type: "mrkdwn",
 				text: "*Weather forecast for <https://darksky.net/#{dig(:latitude)},#{dig(:longitude)}|#{dig(:location)}>*"
 			}
-		}
-  end
-
-  def refresh_button_block
-    {
-			type: "actions",
-			elements: [
-				{
-					type: "button",
-          text: {
-            type: "plain_text",
-            text: "Refresh",
-            emoji: true
-          },
-          action_id: "refresh_app_home"
-				}
-			]
 		}
   end
 

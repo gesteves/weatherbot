@@ -53,11 +53,20 @@ class HomeViewPresenter < SimpleDelegator
       type: "actions",
       elements: [
         {
+					type: "button",
+          text: {
+            type: "plain_text",
+            text: "Refresh",
+            emoji: true
+          },
+          action_id: "refresh_app_home"
+				},
+        {
           type: "button",
           text: {
             type: "plain_text",
             text: "Preferences",
-            "emoji": true
+            emoji: true
           },
           action_id: "open_preferences"
         }
