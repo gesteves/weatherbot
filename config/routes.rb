@@ -8,14 +8,10 @@ Rails.application.routes.draw do
   end if Rails.env.production?
   mount Sidekiq::Web, at: "/sidekiq"
 
-  get  "/success"            => "home#success",       :as => "success"
-  get  "/privacy"            => "home#privacy",       :as => "privacy"
-
   # Slack endpoints
   get  "/slack/auth"         => "slack#auth",         :as => "auth"
   post "/slack/interactions" => "slack#interactions", :as => "interactions"
   post "/slack/events"       => "slack#events",       :as => "events"
   post "/slack/slash"        => "slack#slash",        :as => "slash"
   # Defines the root path route ("/")
-  root "home#index"
 end
