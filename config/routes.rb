@@ -14,4 +14,5 @@ Rails.application.routes.draw do
   post "/slack/events"       => "slack#events",       :as => "events"
   post "/slack/slash"        => "slack#slash",        :as => "slash"
   # Defines the root path route ("/")
+  root to: redirect('https://www.gesteves.com')
 end
